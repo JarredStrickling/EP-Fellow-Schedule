@@ -27,7 +27,6 @@ export default function App() {
   const [weeksToShow] = useState(52);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
-
   const fetchSchedule = async () => {
     const { data, error } = await supabase.from("schedule").select();
     if (error) console.error("Error fetching schedule:", error);
@@ -42,21 +41,14 @@ export default function App() {
   };
 
   const saveAssignment = async (weekKey, assignments) => {
-    const { error } = await supabase.from("schedule").upsert({ week_key: weekKey, ...assignments });
+    const { error } = await supabase
+      .from("schedule")
+      .upsert({ week_key: weekKey, ...assignments });
     if (error) console.error("Error saving assignment:", error);
   };
 
-  useEffect(() => {
-    fetchSchedule();
-  }, []);
-
-  useEffect(() => {
-    if (!loading && scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [loading]);
-
-  const handleTap = async (weekKey, role) => {
+  const handleTap = (weekKey, role, e) => {
+    e.preventDefault();
     setSchedule((prev) => {
       const nextFellow = fellows[(fellows.indexOf(prev[weekKey][role]) + 1) % fellows.length];
       const updated = {
@@ -71,6 +63,15 @@ export default function App() {
     });
   };
 
+  useEffect(() => {
+    fetchSchedule();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [loading]);
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
     const weekKey = format(weekStart, "yyyy-MM-dd");
@@ -115,12 +116,19 @@ export default function App() {
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: "0.5rem" }}>
-          <a href={clinicScheduleLink} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9rem", color: "#2563eb", textDecoration: "underline" }}>
-            Clinic Schedule
-          </a>
-        </div>
-        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", width: "100%" }}>
+          <div
+            style={{
+              background: "#e5e7eb",
+              padding: "0.75rem",
+              borderRadius: "0.5rem",
+              flex: "1 1 120px",
+              textAlign: "center",
+              fontSize: "0.9rem",
+            }}
+          >
+            <strong>EP Fellows Schedule</strong>
+          </div>
           {fellows.map((name) => (
             <div
               key={name}
@@ -140,18 +148,11 @@ export default function App() {
               <div>Total: {tally[name].total}</div>
             </div>
           ))}
-          <div
-            style={{
-              background: "#e5e7eb",
-              padding: "0.75rem",
-              borderRadius: "0.5rem",
-              flex: "1 1 120px",
-              textAlign: "center",
-              fontSize: "0.9rem",
-            }}
-          >
-            <strong>EP Fellows Schedule</strong>
-          </div>
+        </div>
+        <div style={{ marginTop: "0.5rem" }}>
+          <a href={clinicScheduleLink} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9rem", color: "#2563eb", textDecoration: "underline" }}>
+            Clinic Schedule
+          </a>
         </div>
       </div>
 
@@ -183,7 +184,7 @@ export default function App() {
               {Object.keys(roleLabels).map((role) => (
                 <div key={role} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <div
-                    onClick={() => handleTap(weekKey, role)}
+                    onClick={(e) => handleTap(weekKey, role, e)}
                     style={{
                       width: "36px",
                       height: "36px",

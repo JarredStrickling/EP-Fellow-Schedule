@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { format, addWeeks, parseISO, isAfter } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
-import { FaEdit } from "react-icons/fa";
 
 const SUPABASE_URL = "https://ekrraibgkgntafarxoni.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrcnJhaWJna2dudGFmYXJ4b25pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzI5MTMsImV4cCI6MjA2MDk0ODkxM30.a6KwZbxSCql1AjhKG9PMPjh6ctU9nnFzwgGerMOVmBI";
@@ -27,7 +26,6 @@ export default function App() {
   const [startDate] = useState(parseISO("2025-06-30"));
   const [weeksToShow] = useState(52);
   const [loading, setLoading] = useState(true);
-  const [editingWeek, setEditingWeek] = useState(null);
   const scrollRef = useRef(null);
 
   const fetchSchedule = async () => {
@@ -58,23 +56,19 @@ export default function App() {
     }
   }, [loading]);
 
-  const handleEdit = (weekKey) => {
-    setEditingWeek(weekKey);
-  };
-
-  const handleSave = async (weekKey) => {
-    await saveAssignment(weekKey, schedule[weekKey]);
-    setEditingWeek(null);
-  };
-
-  const handleChange = (weekKey, role, value) => {
-    setSchedule((prev) => ({
-      ...prev,
-      [weekKey]: {
-        ...prev[weekKey],
-        [role]: value,
-      },
-    }));
+  const handleTap = async (weekKey, role) => {
+    setSchedule((prev) => {
+      const nextFellow = fellows[(fellows.indexOf(prev[weekKey][role]) + 1) % fellows.length];
+      const updated = {
+        ...prev,
+        [weekKey]: {
+          ...prev[weekKey],
+          [role]: nextFellow,
+        },
+      };
+      saveAssignment(weekKey, updated[weekKey]);
+      return updated;
+    });
   };
 
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
@@ -146,6 +140,18 @@ export default function App() {
               <div>Total: {tally[name].total}</div>
             </div>
           ))}
+          <div
+            style={{
+              background: "#e5e7eb",
+              padding: "0.75rem",
+              borderRadius: "0.5rem",
+              flex: "1 1 120px",
+              textAlign: "center",
+              fontSize: "0.9rem",
+            }}
+          >
+            <strong>EP Fellows Schedule</strong>
+          </div>
         </div>
       </div>
 
@@ -173,91 +179,29 @@ export default function App() {
               Week of {format(weekStart, "MMM d, yyyy")}
             </div>
 
-            {editingWeek === weekKey ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {Object.keys(roleLabels).map((role) => (
-                  <div key={role} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <div
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        background: fellowColors[assigned[role]],
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {assigned[role]}
-                    </div>
-                    <select
-                      value={assigned[role]}
-                      onChange={(e) => handleChange(weekKey, role, e.target.value)}
-                      style={{ flex: 1, padding: "0.5rem", borderRadius: "0.5rem" }}
-                    >
-                      {fellows.map((f) => (
-                        <option key={f} value={f}>
-                          {f}
-                        </option>
-                      ))}
-                    </select>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              {Object.keys(roleLabels).map((role) => (
+                <div key={role} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <div
+                    onClick={() => handleTap(weekKey, role)}
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      background: fellowColors[assigned[role]],
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {assigned[role]}
                   </div>
-                ))}
-                <button
-                  onClick={() => handleSave(weekKey)}
-                  style={{
-                    marginTop: "0.5rem",
-                    padding: "0.5rem",
-                    background: "#4ade80",
-                    border: "none",
-                    borderRadius: "0.5rem",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                  }}
-                >
-                  Save
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {Object.keys(roleLabels).map((role) => (
-                  <div key={role} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <div
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        background: fellowColors[assigned[role]],
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {assigned[role]}
-                    </div>
-                    <div style={{ fontWeight: "500" }}>{roleLabels[role]}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {editingWeek !== weekKey && (
-              <button
-                onClick={() => handleEdit(weekKey)}
-                style={{
-                  position: "absolute",
-                  bottom: "1rem",
-                  right: "1rem",
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                <FaEdit size={18} />
-              </button>
-            )}
+                  <div style={{ fontWeight: "500" }}>{roleLabels[role]}</div>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

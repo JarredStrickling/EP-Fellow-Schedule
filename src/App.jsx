@@ -8,11 +8,19 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const fellows = ["JS", "TD", "MS"];
-const colors = {
-  lab_d: "#bfdbfe", // blue
-  lab_f: "#bbf7d0", // green
-  rex_hbh: "#fecaca", // red
+const fellowColors = {
+  JS: "#bfdbfe",
+  TD: "#bbf7d0",
+  MS: "#fecaca",
 };
+
+const roleLabels = {
+  lab_d: "Lab D",
+  lab_f: "Lab F",
+  rex_hbh: "Rex/HBH",
+};
+
+const clinicScheduleLink = "https://unchcs-my.sharepoint.com/:x:/r/personal/u324188_unch_unc_edu/Documents/Attachments/EP%20schedule%202025%20JUN-DEC.xlsx?d=w7e639e8a3f3a4636bfc019a3e39f7f1c&csf=1&web=1&e=dw3UBA";
 
 export default function App() {
   const [schedule, setSchedule] = useState({});
@@ -106,30 +114,39 @@ export default function App() {
           background: "#fff",
           padding: "1rem",
           display: "flex",
-          gap: "1rem",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
           zIndex: 10,
         }}
       >
-        {fellows.map((name) => (
-          <div
-            key={name}
-            style={{
-              background: "#f9fafb",
-              padding: "0.75rem",
-              borderRadius: "0.5rem",
-              flex: 1,
-              textAlign: "center",
-              fontSize: "0.9rem",
-            }}
-          >
-            <strong>{name}</strong>
-            <div>Lab D: {tally[name].lab_d}</div>
-            <div>Lab F: {tally[name].lab_f}</div>
-            <div>Rex/HBH: {tally[name].rex_hbh}</div>
-            <div>Total: {tally[name].total}</div>
-          </div>
-        ))}
+        <div style={{ marginBottom: "0.5rem" }}>
+          <a href={clinicScheduleLink} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9rem", color: "#2563eb", textDecoration: "underline" }}>
+            Clinic Schedule
+          </a>
+        </div>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+          {fellows.map((name) => (
+            <div
+              key={name}
+              style={{
+                background: fellowColors[name],
+                padding: "0.75rem",
+                borderRadius: "0.5rem",
+                flex: "1 1 120px",
+                textAlign: "center",
+                fontSize: "0.9rem",
+              }}
+            >
+              <strong>{name}</strong>
+              <div>Lab D: {tally[name].lab_d}</div>
+              <div>Lab F: {tally[name].lab_f}</div>
+              <div>Rex/HBH: {tally[name].rex_hbh}</div>
+              <div>Total: {tally[name].total}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div
@@ -158,14 +175,14 @@ export default function App() {
 
             {editingWeek === weekKey ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {Object.keys(colors).map((role) => (
+                {Object.keys(roleLabels).map((role) => (
                   <div key={role} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <div
                       style={{
                         width: "36px",
                         height: "36px",
                         borderRadius: "50%",
-                        background: colors[role],
+                        background: fellowColors[assigned[role]],
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -204,14 +221,14 @@ export default function App() {
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {Object.keys(colors).map((role) => (
+                {Object.keys(roleLabels).map((role) => (
                   <div key={role} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <div
                       style={{
                         width: "36px",
                         height: "36px",
                         borderRadius: "50%",
-                        background: colors[role],
+                        background: fellowColors[assigned[role]],
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -220,7 +237,7 @@ export default function App() {
                     >
                       {assigned[role]}
                     </div>
-                    <div style={{ fontWeight: "500" }}>{role.toUpperCase()}</div>
+                    <div style={{ fontWeight: "500" }}>{roleLabels[role]}</div>
                   </div>
                 ))}
               </div>

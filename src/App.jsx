@@ -47,14 +47,19 @@ export default function App() {
     if (error) console.error("Error saving assignment:", error);
   };
 
-  const handleTap = (weekKey, role, e) => {
+  const handleTap = async (weekKey, role, e) => {
     e.preventDefault();
     setSchedule((prev) => {
-      const nextFellow = fellows[(fellows.indexOf(prev[weekKey][role]) + 1) % fellows.length];
+      const weekData = prev[weekKey] || {
+        lab_d: fellows[0],
+        lab_f: fellows[1],
+        rex_hbh: fellows[2],
+      };
+      const nextFellow = fellows[(fellows.indexOf(weekData[role]) + 1) % fellows.length];
       const updated = {
         ...prev,
         [weekKey]: {
-          ...prev[weekKey],
+          ...weekData,
           [role]: nextFellow,
         },
       };
@@ -62,6 +67,7 @@ export default function App() {
       return updated;
     });
   };
+  
 
   useEffect(() => {
     fetchSchedule();

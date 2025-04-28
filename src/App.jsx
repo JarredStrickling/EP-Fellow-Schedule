@@ -50,23 +50,31 @@ export default function App() {
   const handleTap = async (weekKey, role, e) => {
     e.preventDefault();
     setSchedule((prev) => {
-      const weekData = prev[weekKey] || {
+      const currentWeek = prev[weekKey] || {
         lab_d: fellows[0],
         lab_f: fellows[1],
         rex_hbh: fellows[2],
       };
-      const nextFellow = fellows[(fellows.indexOf(weekData[role]) + 1) % fellows.length];
+  
+      const nextFellow = fellows[(fellows.indexOf(currentWeek[role]) + 1) % fellows.length];
+  
+      const updatedWeek = {
+        lab_d: currentWeek.lab_d,
+        lab_f: currentWeek.lab_f,
+        rex_hbh: currentWeek.rex_hbh,
+        [role]: nextFellow, // only this one role changes
+      };
+  
       const updated = {
         ...prev,
-        [weekKey]: {
-          ...weekData,
-          [role]: nextFellow,
-        },
+        [weekKey]: updatedWeek,
       };
-      saveAssignment(weekKey, updated[weekKey]);
+  
+      saveAssignment(weekKey, updatedWeek);
       return updated;
     });
   };
+  
   
 
   useEffect(() => {

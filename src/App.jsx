@@ -76,7 +76,6 @@ export default function App() {
   };
   
   
-
   useEffect(() => {
     fetchSchedule();
   }, []);
@@ -117,58 +116,53 @@ export default function App() {
   return (
     <div style={{ padding: "1rem", fontFamily: "sans-serif" }}>
       <div
+  style={{
+    position: "sticky",
+    top: 0,
+    background: "#fff",
+    padding: "1rem",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+    zIndex: 10,
+  }}
+>
+  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center", width: "100%" }}>
+    {fellows.map((name) => (
+      <div
+        key={name}
         style={{
-          position: "sticky",
-          top: 0,
-          background: "#fff",
-          padding: "1rem",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-between",
-          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-          zIndex: 10,
+          background: fellowColors[name],
+          padding: "0.5rem",
+          borderRadius: "0.5rem",
+          flex: "1 1 80px",
+          textAlign: "center",
+          fontSize: "0.8rem",
+          minWidth: "90px",
         }}
       >
-        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", width: "100%" }}>
-          <div
-            style={{
-              background: "#e5e7eb",
-              padding: "0.75rem",
-              borderRadius: "0.5rem",
-              flex: "1 1 120px",
-              textAlign: "center",
-              fontSize: "0.9rem",
-            }}
-          >
-            <strong>EP Fellows Schedule</strong>
-          </div>
-          {fellows.map((name) => (
-            <div
-              key={name}
-              style={{
-                background: fellowColors[name],
-                padding: "0.75rem",
-                borderRadius: "0.5rem",
-                flex: "1 1 120px",
-                textAlign: "center",
-                fontSize: "0.9rem",
-              }}
-            >
-              <strong>{name}</strong>
-              <div>Lab D: {tally[name].lab_d}</div>
-              <div>Lab F: {tally[name].lab_f}</div>
-              <div>Rex/HBH: {tally[name].rex_hbh}</div>
-              <div>Total: {tally[name].total}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ marginTop: "0.5rem" }}>
-          <a href={clinicScheduleLink} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9rem", color: "#2563eb", textDecoration: "underline" }}>
-            Clinic Schedule
-          </a>
-        </div>
+        <strong>{name}</strong>
+        <div>Lab D: {tally[name].lab_d}</div>
+        <div>Lab F: {tally[name].lab_f}</div>
+        <div>Rex/HBH: {tally[name].rex_hbh}</div>
+        <div>Total: {tally[name].total}</div>
       </div>
+    ))}
+  </div>
+  <div style={{ marginTop: "0.5rem" }}>
+    <a
+      href={clinicScheduleLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ fontSize: "0.8rem", color: "#2563eb", textDecoration: "underline" }}
+    >
+      Clinic Schedule
+    </a>
+  </div>
+</div>
+
 
       <div
         style={{

@@ -115,21 +115,29 @@ export default function App() {
 
   return (
     <div style={{ padding: "1rem", fontFamily: "sans-serif" }}>
-      <div
+     <div
   style={{
     position: "sticky",
     top: 0,
     background: "#fff",
     padding: "1rem",
     display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: "column",
     boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
     zIndex: 10,
   }}
 >
-  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center", width: "100%" }}>
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "row",
+      flexWrap: "nowrap",
+      overflowX: "auto",
+      justifyContent: "center",
+      gap: "0.5rem",
+      width: "100%",
+    }}
+  >
     {fellows.map((name) => (
       <div
         key={name}
@@ -137,10 +145,11 @@ export default function App() {
           background: fellowColors[name],
           padding: "0.5rem",
           borderRadius: "0.5rem",
-          flex: "1 1 80px",
+          flex: "0 0 auto",
+          minWidth: "90px",
           textAlign: "center",
           fontSize: "0.8rem",
-          minWidth: "90px",
+          whiteSpace: "nowrap",
         }}
       >
         <strong>{name}</strong>
@@ -151,7 +160,13 @@ export default function App() {
       </div>
     ))}
   </div>
-  <div style={{ marginTop: "0.5rem" }}>
+  <div
+    style={{
+      textAlign: "right",
+      marginTop: "0.5rem",
+      width: "100%",
+    }}
+  >
     <a
       href={clinicScheduleLink}
       target="_blank"
@@ -162,6 +177,7 @@ export default function App() {
     </a>
   </div>
 </div>
+
 
 
       <div

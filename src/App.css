@@ -48,6 +48,8 @@
   --card-bg: #f0f4f8;
   --card-shadow: rgba(0, 0, 0, 0.1);
   --link: #2563eb;
+  --fellow-text: #111;
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -57,6 +59,8 @@
     --card-bg: #2a2a2a;
     --card-shadow: rgba(255, 255, 255, 0.1);
     --link: #60a5fa;
+    --fellow-text: #111;
+
   }
 }
 

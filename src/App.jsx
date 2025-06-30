@@ -147,10 +147,13 @@ export default function App() {
 >
 
           {fellows.map((name) => (
+            
             <div
               key={name}
               style={{
                 background: fellowColors[name],
+                color: "var(--fellow-text)",
+
                 padding: "0.5rem",
                 borderRadius: "0.5rem",
                 flex: "0 0 auto",
@@ -224,6 +227,8 @@ export default function App() {
                       height: "36px",
                       borderRadius: "50%",
                       background: fellowColors[assigned[role]],
+                      color: "var(--fellow-text)",
+
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

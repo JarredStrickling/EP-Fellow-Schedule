@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { format, addWeeks, parseISO, isAfter } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
+import "./App.css";
 
 const SUPABASE_URL = "https://ekrraibgkgntafarxoni.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrcnJhaWJna2dudGFmYXJ4b25pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzI5MTMsImV4cCI6MjA2MDk0ODkxM30.a6KwZbxSCql1AjhKG9PMPjh6ctU9nnFzwgGerMOVmBI";
@@ -27,6 +28,7 @@ export default function App() {
   const [weeksToShow] = useState(52);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
+
   const fetchSchedule = async () => {
     const { data, error } = await supabase.from("schedule").select();
     if (error) console.error("Error fetching schedule:", error);
@@ -55,27 +57,27 @@ export default function App() {
         lab_f: fellows[1],
         rex_hbh: fellows[2],
       };
-  
-      const nextFellow = fellows[(fellows.indexOf(currentWeek[role]) + 1) % fellows.length];
-  
+
+      const nextFellow =
+        fellows[(fellows.indexOf(currentWeek[role]) + 1) % fellows.length];
+
       const updatedWeek = {
         lab_d: currentWeek.lab_d,
         lab_f: currentWeek.lab_f,
         rex_hbh: currentWeek.rex_hbh,
-        [role]: nextFellow, // only this one role changes
+        [role]: nextFellow,
       };
-  
+
       const updated = {
         ...prev,
         [weekKey]: updatedWeek,
       };
-  
+
       saveAssignment(weekKey, updatedWeek);
       return updated;
     });
   };
-  
-  
+
   useEffect(() => {
     fetchSchedule();
   }, []);
@@ -85,6 +87,7 @@ export default function App() {
       scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [loading]);
+
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
     const weekKey = format(weekStart, "yyyy-MM-dd");
@@ -96,7 +99,9 @@ export default function App() {
     return { weekKey, weekStart, assigned };
   });
 
-  const todayIndex = weekList.findIndex((w) => isAfter(new Date(w.weekStart), new Date()));
+  const todayIndex = weekList.findIndex((w) =>
+    isAfter(new Date(w.weekStart), new Date())
+  );
 
   const tally = fellows.reduce((acc, name) => {
     acc[name] = { lab_d: 0, lab_f: 0, rex_hbh: 0, total: 0 };
@@ -114,71 +119,73 @@ export default function App() {
   if (loading) return <div style={{ padding: "2rem" }}>Loading schedule...</div>;
 
   return (
-    <div style={{ padding: "1rem", fontFamily: "sans-serif" }}>
-     <div
-  style={{
-    position: "sticky",
-    top: 0,
-    background: "#fff",
-    padding: "1rem",
-    display: "flex",
-    flexDirection: "column",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-    zIndex: 10,
-  }}
->
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "row",
-      flexWrap: "nowrap",
-      overflowX: "auto",
-      justifyContent: "center",
-      gap: "0.5rem",
-      width: "100%",
-    }}
-  >
-    {fellows.map((name) => (
+    <div style={{ padding: "1rem", backgroundColor: "var(--bg)", color: "var(--text)" }}>
       <div
-        key={name}
         style={{
-          background: fellowColors[name],
-          padding: "0.5rem",
-          borderRadius: "0.5rem",
-          flex: "0 0 auto",
-          minWidth: "90px",
-          textAlign: "center",
-          fontSize: "0.8rem",
-          whiteSpace: "nowrap",
+          position: "sticky",
+          top: 0,
+          backgroundColor: "var(--bg)",
+          padding: "1rem",
+          display: "flex",
+          flexDirection: "column",
+          boxShadow: "0 2px 5px var(--card-shadow)",
+          zIndex: 10,
         }}
       >
-        <strong>{name}</strong>
-        <div>Lab D: {tally[name].lab_d}</div>
-        <div>Lab F: {tally[name].lab_f}</div>
-        <div>Rex/HBH: {tally[name].rex_hbh}</div>
-        <div>Total: {tally[name].total}</div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "nowrap",
+            overflowX: "auto",
+            justifyContent: "center",
+            gap: "0.5rem",
+            width: "100%",
+          }}
+        >
+          {fellows.map((name) => (
+            <div
+              key={name}
+              style={{
+                background: fellowColors[name],
+                padding: "0.5rem",
+                borderRadius: "0.5rem",
+                flex: "0 0 auto",
+                minWidth: "90px",
+                textAlign: "center",
+                fontSize: "0.8rem",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <strong>{name}</strong>
+              <div>Lab D: {tally[name].lab_d}</div>
+              <div>Lab F: {tally[name].lab_f}</div>
+              <div>Rex/HBH: {tally[name].rex_hbh}</div>
+              <div>Total: {tally[name].total}</div>
+            </div>
+          ))}
+        </div>
+        <div
+          style={{
+            textAlign: "right",
+            marginTop: "0.5rem",
+            width: "100%",
+          }}
+        >
+          <a
+            href={clinicScheduleLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: "0.8rem",
+              color: "var(--link)",
+              textDecoration: "underline",
+            }}
+          >
+            Clinic Schedule
+          </a>
+        </div>
       </div>
-    ))}
-  </div>
-  <div
-    style={{
-      textAlign: "right",
-      marginTop: "0.5rem",
-      width: "100%",
-    }}
-  >
-    <a
-      href={clinicScheduleLink}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ fontSize: "0.8rem", color: "#2563eb", textDecoration: "underline" }}
-    >
-      Clinic Schedule
-    </a>
-  </div>
-</div>
-
-
 
       <div
         style={{
@@ -193,10 +200,10 @@ export default function App() {
             key={weekKey}
             ref={i === todayIndex ? scrollRef : null}
             style={{
-              background: "#f0f4f8",
+              backgroundColor: "var(--card-bg)",
               padding: "1rem",
               borderRadius: "0.75rem",
-              boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+              boxShadow: "0 2px 5px var(--card-shadow)",
               position: "relative",
             }}
           >

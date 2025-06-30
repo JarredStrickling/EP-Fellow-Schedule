@@ -40,3 +40,28 @@
 .read-the-docs {
   color: #888;
 }
+/* === Light/Dark Mode Variables === */
+
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+  --card-bg: #f0f4f8;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --link: #2563eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1a;
+    --text: #ffffff;
+    --card-bg: #2a2a2a;
+    --card-shadow: rgba(255, 255, 255, 0.1);
+    --link: #60a5fa;
+  }
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: sans-serif;
+}

@@ -133,16 +133,19 @@ export default function App() {
         }}
       >
         <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "nowrap",
-            overflowX: "auto",
-            justifyContent: "center",
-            gap: "0.5rem",
-            width: "100%",
-          }}
-        >
+  style={{
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    overflowX: "auto",
+    justifyContent: "flex-start", // don't force centering
+    gap: "0.75rem",
+    padding: "0 1rem",
+    width: "100%",
+    boxSizing: "border-box",
+  }}
+>
+
           {fellows.map((name) => (
             <div
               key={name}
@@ -151,7 +154,7 @@ export default function App() {
                 padding: "0.5rem",
                 borderRadius: "0.5rem",
                 flex: "0 0 auto",
-                minWidth: "90px",
+                minWidth: "120px",
                 textAlign: "center",
                 fontSize: "0.8rem",
                 whiteSpace: "nowrap",

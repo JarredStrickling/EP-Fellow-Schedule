@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import CreateSchedule from "./CreateSchedule.jsx";
+import App from "./App"; // ✅ This is your real app now
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <CreateSchedule />
+    <App />
   </React.StrictMode>
 );

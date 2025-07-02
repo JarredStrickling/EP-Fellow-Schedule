@@ -1,7 +1,3 @@
-
-}
-};
-
 const fetchClinicData = async () => {
   const { data, error } = await supabase.from("clinic_schedule").select("*");
   if (error) {
@@ -54,15 +50,6 @@ const fetchSchedule = async () => {
     });
     setSchedule(mapped);
     setLoading(false);
-    data.forEach((row) => {
-      mapped[row.week_range] = {
-        monday: row.monday,
-        tuesday: row.tuesday,
-        wednesday: row.wednesday,
-        thursday: row.thursday,
-        friday: row.friday,
-      };
-    });
     setClinicData(mapped);
   }
 };

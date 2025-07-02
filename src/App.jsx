@@ -20,7 +20,8 @@ const roleLabels = {
   rex_hbh: "Rex/HBH",
 };
 
-const clinicScheduleLink = "https://unchcs-my.sharepoint.com/:x:/r/personal/u324188_unch_unc_edu/Documents/Attachments/EP%20schedule%202025%20JUN-DEC.xlsx?d=w7e639e8a3f3a4636bfc019a3e39f7f1c&csf=1&web=1&e=dw3UBA";
+const clinicScheduleLink =
+  "https://unchcs-my.sharepoint.com/:x:/r/personal/u324188_unch_unc_edu/Documents/Attachments/EP%20schedule%202025%20JUN-DEC.xlsx?d=w7e639e8a3f3a4636bfc019a3e39f7f1c&csf=1&web=1&e=dw3UBA";
 
 export default function App() {
   const [clinicData, setClinicData] = useState({});
@@ -38,19 +39,43 @@ export default function App() {
     if (error) console.error("Error fetching schedule:", error);
     else {
       const mapped = {};
-      data.forEach(({ week_key, lab_d, lab_f, rex_hbh, monday, tuesday, wednesday, thursday, friday }) => {
+      data.forEach(({ week_key, lab_d, lab_f, rex_hbh }) => {
         mapped[week_key] = { lab_d, lab_f, rex_hbh };
-        mapped[week_key].clinic = { monday, tuesday, wednesday, thursday, friday };
       });
       setSchedule(mapped);
-      setClinicData(
-        Object.fromEntries(
-          Object.entries(mapped).map(([k, v]) => [k, v.clinic])
-        )
-      );
       setLoading(false);
     }
   };
+
+  const fetchClinicData = async () => {
+    const { data, error } = await supabase.from("clinic_schedule").select("*");
+    if (error) {
+      console.error("Error fetching clinic data:", error);
+    } else {
+      const mapped = {};
+      data.forEach((row) => {
+        mapped[row.week_key] = {
+          monday: row.monday,
+          tuesday: row.tuesday,
+          wednesday: row.wednesday,
+          thursday: row.thursday,
+          friday: row.friday,
+        };
+      });
+      setClinicData(mapped);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchedule();
+    fetchClinicData();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [loading]);
 
   const saveAssignment = async (weekKey, assignments) => {
     const { error } = await supabase.from("schedule").upsert({ week_key: weekKey, ...assignments });
@@ -72,42 +97,6 @@ export default function App() {
       return updated;
     });
   };
-
-  useEffect(() => {
-    fetchSchedule();
-    const fetchClinicData = async () => {
-      const { data, error } = await supabase.from("clinic_schedule").select("*");
-      if (error) {
-        console.error("Error fetching clinic data:", error);
-      } else {
-        const mapped = {};
-        data.forEach((row) => {
-          mapped[row.week_key] = {
-            monday: row.monday,
-            tuesday: row.tuesday,
-            wednesday: row.wednesday,
-            thursday: row.thursday,
-            friday: row.friday,
-          };
-        });
-        console.log("Fetched clinic data:", mapped);
-        setClinicData(mapped);
-      }
-    };
-    
-    
-  }, []);
-
-  useEffect(() => {
-    useEffect(() => {
-      fetchSchedule();
-      fetchClinicData(); // ← add this line
-    }, []);
-    
-    if (!loading && scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [loading]);
 
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);

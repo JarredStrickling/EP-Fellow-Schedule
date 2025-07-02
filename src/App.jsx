@@ -75,9 +75,35 @@ export default function App() {
 
   useEffect(() => {
     fetchSchedule();
+    const fetchClinicData = async () => {
+      const { data, error } = await supabase.from("clinic_schedule").select("*");
+      if (error) {
+        console.error("Error fetching clinic data:", error);
+      } else {
+        const mapped = {};
+        data.forEach((row) => {
+          mapped[row.week_key] = {
+            monday: row.monday,
+            tuesday: row.tuesday,
+            wednesday: row.wednesday,
+            thursday: row.thursday,
+            friday: row.friday,
+          };
+        });
+        console.log("Fetched clinic data:", mapped);
+        setClinicData(mapped);
+      }
+    };
+    
+    
   }, []);
 
   useEffect(() => {
+    useEffect(() => {
+      fetchSchedule();
+      fetchClinicData(); // ← add this line
+    }, []);
+    
     if (!loading && scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }

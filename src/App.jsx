@@ -1,5 +1,3 @@
-import clinicSchedule from "./clinicSchedule";
-
 import { useState, useEffect, useRef } from "react";
 import { format, addWeeks, parseISO, isAfter } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
@@ -25,6 +23,7 @@ const roleLabels = {
 const clinicScheduleLink = "https://unchcs-my.sharepoint.com/:x:/r/personal/u324188_unch_unc_edu/Documents/Attachments/EP%20schedule%202025%20JUN-DEC.xlsx?d=w7e639e8a3f3a4636bfc019a3e39f7f1c&csf=1&web=1&e=dw3UBA";
 
 export default function App() {
+  const [clinicData, setClinicData] = useState({});
   const [schedule, setSchedule] = useState({});
   const [startDate] = useState(parseISO("2025-06-30"));
   const [weeksToShow] = useState(52);
@@ -36,8 +35,6 @@ export default function App() {
   const [enteredPw, setEnteredPw] = useState("");
   const [visibleClinic, setVisibleClinic] = useState(null);
 
-  
-
   const fetchSchedule = async () => {
     const { data, error } = await supabase.from("schedule").select();
     if (error) console.error("Error fetching schedule:", error);
@@ -48,6 +45,25 @@ export default function App() {
       });
       setSchedule(mapped);
       setLoading(false);
+    }
+  };
+
+  const fetchClinicData = async () => {
+    const { data, error } = await supabase.from("clinic_schedule").select("*");
+    if (error) {
+      console.error("Error fetching clinic data:", error);
+    } else {
+      const mapped = {};
+      data.forEach((row) => {
+        mapped[row.week_range] = {
+          monday: row.monday,
+          tuesday: row.tuesday,
+          wednesday: row.wednesday,
+          thursday: row.thursday,
+          friday: row.friday,
+        };
+      });
+      setClinicData(mapped);
     }
   };
 
@@ -89,6 +105,7 @@ export default function App() {
 
   useEffect(() => {
     fetchSchedule();
+    fetchClinicData();
   }, []);
 
   useEffect(() => {
@@ -128,30 +145,13 @@ export default function App() {
   if (loading) return <div style={{ padding: "2rem" }}>Loading schedule...</div>;
   if (!unlocked) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          backgroundColor: "var(--bg)",
-          color: "var(--text)",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "2rem",
-          fontFamily: "sans-serif",
-        }}
-      >
+      <div style={{ height: "100vh", backgroundColor: "var(--bg)", color: "var(--text)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "2rem", fontFamily: "sans-serif" }}>
         <h2 style={{ marginBottom: "1rem" }}>Enter Password to Access Schedule</h2>
         <input
           type="password"
           value={enteredPw}
           onChange={(e) => setEnteredPw(e.target.value)}
-          style={{
-            padding: "0.5rem",
-            borderRadius: "0.5rem",
-            border: "1px solid #ccc",
-            fontSize: "1rem",
-          }}
+          style={{ padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", fontSize: "1rem" }}
         />
         <button
           onClick={() => {
@@ -162,16 +162,7 @@ export default function App() {
               alert("Incorrect password.");
             }
           }}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            borderRadius: "0.5rem",
-            border: "none",
-            backgroundColor: "#2563eb",
-            color: "white",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
+          style={{ marginTop: "1rem", padding: "0.5rem 1rem", borderRadius: "0.5rem", border: "none", backgroundColor: "#2563eb", color: "white", fontWeight: "bold", cursor: "pointer" }}
         >
           Unlock
         </button>
@@ -179,102 +170,11 @@ export default function App() {
     );
   }
 
-
   return (
     <div style={{ padding: "1rem", backgroundColor: "var(--bg)", color: "var(--text)" }}>
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          backgroundColor: "var(--bg)",
-          padding: "1rem",
-          display: "flex",
-          flexDirection: "column",
-          boxShadow: "0 2px 5px var(--card-shadow)",
-          zIndex: 10,
-        }}
-      >
-        <div
-  style={{
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    overflowX: "auto",
-    justifyContent: "flex-start", // don't force centering
-    gap: "0.75rem",
-    padding: "0 1rem",
-    width: "100%",
-    boxSizing: "border-box",
-  }}
->
-
-          {fellows.map((name) => (
-            
-            <div
-              key={name}
-              style={{
-                background: fellowColors[name],
-                color: "var(--fellow-text)",
-
-                padding: "0.5rem",
-                borderRadius: "0.5rem",
-                flex: "0 0 auto",
-                minWidth: "120px",
-                textAlign: "center",
-                fontSize: "0.8rem",
-                whiteSpace: "nowrap",
-              }}
-            >
-              <strong>{name}</strong>
-              <div>Lab D: {tally[name].lab_d}</div>
-              <div>Lab F: {tally[name].lab_f}</div>
-              <div>Rex/HBH: {tally[name].rex_hbh}</div>
-              <div>Total: {tally[name].total}</div>
-            </div>
-          ))}
-        </div>
-        <div
-          style={{
-            textAlign: "right",
-            marginTop: "0.5rem",
-            width: "100%",
-          }}
-        >
-          <a
-            href={clinicScheduleLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: "0.8rem",
-              color: "var(--link)",
-              textDecoration: "underline",
-            }}
-          >
-            Clinic Schedule
-          </a>
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: "1rem",
-          marginTop: "1rem",
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginTop: "1rem" }}>
         {weekList.map(({ weekKey, weekStart, assigned }, i) => (
-          <div
-            key={weekKey}
-            ref={i === todayIndex ? scrollRef : null}
-            style={{
-              backgroundColor: "var(--card-bg)",
-              padding: "1rem",
-              borderRadius: "0.75rem",
-              boxShadow: "0 2px 5px var(--card-shadow)",
-              position: "relative",
-            }}
-          >
+          <div key={weekKey} ref={i === todayIndex ? scrollRef : null} style={{ backgroundColor: "var(--card-bg)", padding: "1rem", borderRadius: "0.75rem", boxShadow: "0 2px 5px var(--card-shadow)", position: "relative" }}>
             <div style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>
               Week of {format(weekStart, "MMM d, yyyy")}
             </div>
@@ -284,61 +184,28 @@ export default function App() {
                 <div key={role} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <div
                     onClick={(e) => handleTap(weekKey, role, e)}
-                    style={{
-                      width: "36px",
-                      height: "36px",
-                      borderRadius: "50%",
-                      background: fellowColors[assigned[role]],
-                      color: "var(--fellow-text)",
-
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                    }}
+                    style={{ width: "36px", height: "36px", borderRadius: "50%", background: fellowColors[assigned[role]], color: "var(--fellow-text)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", cursor: "pointer" }}
                   >
                     {assigned[role]}
                   </div>
                   <div style={{ fontWeight: "500" }}>{roleLabels[role]}</div>
                 </div>
               ))}
-            </div><button
-  style={{
-    marginTop: "0.75rem",
-    backgroundColor: "#2563eb",
-    color: "white",
-    border: "none",
-    padding: "0.25rem 0.5rem",
-    borderRadius: "0.5rem",
-    fontSize: "0.8rem",
-    cursor: "pointer"
-  }}
-  onClick={() =>
-    setVisibleClinic(visibleClinic === weekKey ? null : weekKey)
-  }
->
-  {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
-</button>
+            </div>
 
-{visibleClinic === weekKey && clinicSchedule[weekKey] && (
-  <div style={{
-    marginTop: "0.5rem",
-    fontSize: "0.85rem",
-    backgroundColor: "var(--bg)",
-    padding: "0.5rem",
-    borderRadius: "0.5rem",
-    border: "1px solid var(--card-shadow)",
-    textAlign: "left"
-  }}>
-    {Object.entries(clinicSchedule[weekKey]).map(([day, person]) => (
-      <div key={day}>
-        <strong>{day}:</strong> {person}
-      </div>
-    ))}
-  </div>
-)}
+            <button style={{ marginTop: "0.75rem", backgroundColor: "#2563eb", color: "white", border: "none", padding: "0.25rem 0.5rem", borderRadius: "0.5rem", fontSize: "0.8rem", cursor: "pointer" }} onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}>
+              {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
+            </button>
 
+            {visibleClinic === weekKey && clinicData[weekKey] && (
+              <div style={{ marginTop: "0.5rem", fontSize: "0.85rem", backgroundColor: "var(--bg)", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid var(--card-shadow)", textAlign: "left" }}>
+                {Object.entries(clinicData[weekKey]).map(([day, person]) => (
+                  <div key={day}>
+                    <strong>{day.charAt(0).toUpperCase() + day.slice(1)}:</strong> {person}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

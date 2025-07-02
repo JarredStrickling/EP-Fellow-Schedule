@@ -28,6 +28,11 @@ export default function App() {
   const [weeksToShow] = useState(52);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
+  const [unlocked, setUnlocked] = useState(() => {
+    return localStorage.getItem("unc_ep_pw") === "uncep";
+  });
+  const [enteredPw, setEnteredPw] = useState("");
+  
 
   const fetchSchedule = async () => {
     const { data, error } = await supabase.from("schedule").select();
@@ -117,6 +122,59 @@ export default function App() {
   }, {});
 
   if (loading) return <div style={{ padding: "2rem" }}>Loading schedule...</div>;
+  if (!unlocked) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: "var(--bg)",
+          color: "var(--text)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "2rem",
+          fontFamily: "sans-serif",
+        }}
+      >
+        <h2 style={{ marginBottom: "1rem" }}>Enter Password to Access Schedule</h2>
+        <input
+          type="password"
+          value={enteredPw}
+          onChange={(e) => setEnteredPw(e.target.value)}
+          style={{
+            padding: "0.5rem",
+            borderRadius: "0.5rem",
+            border: "1px solid #ccc",
+            fontSize: "1rem",
+          }}
+        />
+        <button
+          onClick={() => {
+            if (enteredPw === "uncep") {
+              localStorage.setItem("unc_ep_pw", "uncep");
+              setUnlocked(true);
+            } else {
+              alert("Incorrect password.");
+            }
+          }}
+          style={{
+            marginTop: "1rem",
+            padding: "0.5rem 1rem",
+            borderRadius: "0.5rem",
+            border: "none",
+            backgroundColor: "#2563eb",
+            color: "white",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          Unlock
+        </button>
+      </div>
+    );
+  }
+
 
   return (
     <div style={{ padding: "1rem", backgroundColor: "var(--bg)", color: "var(--text)" }}>

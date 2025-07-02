@@ -51,25 +51,31 @@ export default function App() {
     const { data, error } = await supabase.from("clinic_schedule").select("*");
     if (error) {
       console.error("Error fetching clinic data:", error);
-    } else {
-      const mapped = {};
-      data.forEach((row) => {
-        mapped[row.week_key] = {
-          monday: row.monday,
-          tuesday: row.tuesday,
-          wednesday: row.wednesday,
-          thursday: row.thursday,
-          friday: row.friday,
-        };
-      });
-      setClinicData(mapped);
+      return;
     }
+  
+    const mapped = {};
+    data.forEach((row) => {
+      mapped[row.week_key] = {
+        monday: row.monday,
+        tuesday: row.tuesday,
+        wednesday: row.wednesday,
+        thursday: row.thursday,
+        friday: row.friday,
+      };
+    });
+  
+    setClinicData(mapped);
+    console.log("Clinic data loaded:", mapped);
+
   };
+  
 
   useEffect(() => {
     fetchSchedule();
-    fetchClinicData();
+    fetchClinicData(); // <--- THIS!
   }, []);
+  
 
   useEffect(() => {
     if (!loading && scrollRef.current) {

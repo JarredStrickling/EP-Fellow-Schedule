@@ -1,3 +1,5 @@
+import clinicSchedule from "./clinicSchedule";
+
 import { useState, useEffect, useRef } from "react";
 import { format, addWeeks, parseISO, isAfter } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
@@ -32,6 +34,8 @@ export default function App() {
     return localStorage.getItem("unc_ep_pw") === "uncep";
   });
   const [enteredPw, setEnteredPw] = useState("");
+  const [visibleClinic, setVisibleClinic] = useState(null);
+
   
 
   const fetchSchedule = async () => {
@@ -299,7 +303,42 @@ export default function App() {
                   <div style={{ fontWeight: "500" }}>{roleLabels[role]}</div>
                 </div>
               ))}
-            </div>
+            </div><button
+  style={{
+    marginTop: "0.75rem",
+    backgroundColor: "#2563eb",
+    color: "white",
+    border: "none",
+    padding: "0.25rem 0.5rem",
+    borderRadius: "0.5rem",
+    fontSize: "0.8rem",
+    cursor: "pointer"
+  }}
+  onClick={() =>
+    setVisibleClinic(visibleClinic === weekKey ? null : weekKey)
+  }
+>
+  {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
+</button>
+
+{visibleClinic === weekKey && clinicSchedule[weekKey] && (
+  <div style={{
+    marginTop: "0.5rem",
+    fontSize: "0.85rem",
+    backgroundColor: "var(--bg)",
+    padding: "0.5rem",
+    borderRadius: "0.5rem",
+    border: "1px solid var(--card-shadow)",
+    textAlign: "left"
+  }}>
+    {Object.entries(clinicSchedule[weekKey]).map(([day, person]) => (
+      <div key={day}>
+        <strong>{day}:</strong> {person}
+      </div>
+    ))}
+  </div>
+)}
+
           </div>
         ))}
       </div>

@@ -176,8 +176,10 @@ export default function App() {
               background: "var(--card-bg)",
               padding: "1rem",
               borderRadius: "0.75rem",
-              boxShadow: i === todayIndex ? "0 0 0 2px #60a5fa, 0 4px 10px rgba(96, 165, 250, 0.5)" : "0 2px 5px var(--card-shadow)",
-            }}
+              boxShadow: i === todayIndex
+              ? "0 0 10px 2px rgba(96,165,250,0.8), inset 0 0 6px rgba(96,165,250,0.4)"
+              : "0 2px 5px var(--card-shadow)",
+                        }}
           >
             <div><strong>Week of {format(weekStart, "MMM d, yyyy")}</strong></div>
             {Object.keys(roleLabels).map((role) => (

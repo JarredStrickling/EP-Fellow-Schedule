@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import "./App.css";
 
 const SUPABASE_URL = "https://ekrraibgkgntafarxoni.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrcnJhaWJna2dudGFmYXJ4b25pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzI5MTMsImV4cCI6MjA2MDk0ODkxM30.a6KwZbxSCql1AjhKG9PMPjh6ctU9nnFzwgGerMOVmBI"; // Keep this secure
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrcnJhaWJna2dudGFmYXJ4b25pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzI5MTMsImV4cCI6MjA2MDk0ODkxM30.a6KwZbxSCql1AjhKG9PMPjh6ctU9nnFzwgGerMOVmBI";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const fellows = ["JS", "TD", "MS"];
@@ -114,6 +114,7 @@ export default function App() {
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
     const weekEnd = addWeeks(weekStart, 1);
+    weekEnd.setDate(weekEnd.getDate() - 1); // Adjust to Sunday
     const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(weekEnd, "yyyy-MM-dd")}`;
     const assigned = schedule[weekKey] || {
       lab_d: fellows[i % fellows.length],
@@ -157,7 +158,6 @@ export default function App() {
           <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
             <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem" }}>Clinic Schedule</a>
             <a href={ecgConfLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>ECG/EP Conference Zoom</a>
-            <img src="/unc-logo.png" alt="UNC Logo" title="UNC EP Fellowship" style={{ width: "50px", marginTop: "0.5rem", alignSelf: "flex-end", filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.25))" }} />
           </div>
         </div>
       </div>
@@ -182,6 +182,7 @@ export default function App() {
                   className="tap-pill"
                   style={{
                     background: fellowColors[assigned[role]] || "#e5e7eb",
+                    color: "#1a1a1a",
                   }}
                 >
                   {assigned[role]}

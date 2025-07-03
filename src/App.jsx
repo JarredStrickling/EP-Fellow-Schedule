@@ -116,7 +116,9 @@ export default function App() {
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
     const weekEnd = addWeeks(weekStart, 1);
-    const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(weekEnd, "yyyy-MM-dd")}`;
+    const endDate = new Date(weekEnd);
+    endDate.setDate(endDate.getDate() - 1); // correct for one-day overshoot
+    const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(endDate, "yyyy-MM-dd")}`;
     const assigned = schedule[weekKey] || {
       lab_d: fellows[i % fellows.length],
       lab_f: fellows[(i + 1) % fellows.length],
@@ -153,12 +155,12 @@ export default function App() {
   }
 
   return (
-    <div style={{ padding: "1rem", fontFamily: '"Segoe UI", system-ui, sans-serif', color: "var(--text-color)", backgroundColor: "var(--bg-color)" }}>
+    <div style={{ padding: "1rem", fontFamily: '"Inter", system-ui, sans-serif', color: "var(--text-color)", backgroundColor: "var(--bg-color)" }}>
       <div style={{ position: "sticky", top: 0, background: "white", paddingBottom: "1rem", zIndex: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ margin: 0 }}>
+          <h2 style={{ margin: 0, fontWeight: 600, position: "relative" }}>
             EP Schedule
-            <div style={{ fontSize: "0.9rem", fontWeight: "normal", color: "#888" }}>UNC</div>
+            <div style={{ position: "absolute", bottom: -4, left: 0, width: "100%", height: "4px", background: "linear-gradient(to right, #60a5fa, #34d399, #f87171)", borderRadius: "2px" }} />
           </h2>
           <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
             <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem" }}>
@@ -167,7 +169,6 @@ export default function App() {
             <a href={ecgConfLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
               ECG/EP Conference Zoom
             </a>
-            <img src="/unc-logo.png" alt="UNC Logo" style={{ width: "40px", marginTop: "0.5rem", alignSelf: "flex-end" }} />
           </div>
         </div>
       </div>

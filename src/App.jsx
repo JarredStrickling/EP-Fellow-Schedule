@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { format, addWeeks, parseISO, isAfter } from "date-fns";
+import { format, addWeeks, parseISO, isAfter, subDays } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
 import "./App.css";
 
@@ -12,11 +12,12 @@ const fellowColors = {
   JS: "#bfdbfe",
   TD: "#bbf7d0",
   MS: "#fecaca",
-  AG: "#fcd34d",
-  TM: "#fca5a5",
-  MB: "#a5b4fc",
-  FS: "#6ee7b7",
-  PK: "#f9a8d4",
+  AG: "#fde68a",
+  TM: "#fcd34d",
+  MB: "#fdba74",
+  FS: "#fca5a5",
+  PK: "#c4b5fd",
+  "N/A": "#e5e7eb",
 };
 
 const roleLabels = {
@@ -114,7 +115,7 @@ export default function App() {
 
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
-    const weekEnd = addWeeks(weekStart, 1);
+    const weekEnd = subDays(addWeeks(weekStart, 1), 1);
     const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(weekEnd, "yyyy-MM-dd")}`;
     const assigned = schedule[weekKey] || {
       lab_d: fellows[i % fellows.length],
@@ -128,11 +129,11 @@ export default function App() {
 
   const todayIndex = weekList.findIndex((w) => isAfter(new Date(w.weekStart), new Date()));
 
-  if (loading) return <div style={{ padding: "2rem", color: "var(--text-color, #000)" }}>Loading schedule...</div>;
+  if (loading) return <div style={{ padding: "2rem" }}>Loading schedule...</div>;
 
   if (!unlocked) {
     return (
-      <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", color: "var(--text-color, #000)" }}>
+      <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
         <h2>Enter Password</h2>
         <input type="password" value={enteredPw} onChange={(e) => setEnteredPw(e.target.value)} />
         <button
@@ -152,8 +153,8 @@ export default function App() {
   }
 
   return (
-    <div style={{ padding: "1rem", color: "var(--text-color, #000)" }}>
-      <div style={{ position: "sticky", top: 0, background: "var(--bg-color, white)", paddingBottom: "1rem", zIndex: 10 }}>
+    <div style={{ padding: "1rem" }}>
+      <div style={{ position: "sticky", top: 0, background: "white", paddingBottom: "1rem", zIndex: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ margin: 0 }}>EP Schedule</h2>
           <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
@@ -179,13 +180,7 @@ export default function App() {
               <div key={role} style={{ marginTop: "0.5rem" }}>
                 <div
                   onClick={(e) => handleTap(weekKey, role, e)}
-                  style={{
-                    display: "inline-block",
-                    padding: "0.3rem 0.6rem",
-                    background: fellowColors[assigned[role]] || "#e5e7eb",
-                    borderRadius: "1rem",
-                    cursor: "pointer",
-                  }}
+                  style={{ display: "inline-block", padding: "0.3rem 0.6rem", background: fellowColors[assigned[role]] || "#e5e7eb", borderRadius: "1rem", cursor: "pointer" }}
                 >
                   {assigned[role]}
                 </div>

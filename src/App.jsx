@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import "./App.css";
 
 const SUPABASE_URL = "https://ekrraibgkgntafarxoni.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrcnJhaWJna2dudGFmYXJ4b25pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzI5MTMsImV4cCI6MjA2MDk0ODkxM30.a6KwZbxSCql1AjhKG9PMPjh6ctU9nnFzwgGerMOVmBI";
+const SUPABASE_KEY = "your_actual_key_here";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const fellows = ["JS", "TD", "MS"];
@@ -12,16 +12,6 @@ const fellowColors = {
   JS: "#bfdbfe",
   TD: "#bbf7d0",
   MS: "#fecaca",
-};
-
-const attendings = ["AG", "TM", "MB", "FS", "PK", "N/A"];
-const attendingColors = {
-  AG: "#fde68a",
-  TM: "#fcd34d",
-  MB: "#fdba74",
-  FS: "#fca5a5",
-  PK: "#a5b4fc",
-  "N/A": "#e5e7eb",
 };
 
 const roleLabels = {
@@ -32,8 +22,12 @@ const roleLabels = {
   thurs_am_ep: "Thurs AM EP",
 };
 
+const attendings = ["AG", "TM", "MB", "FS", "PK", "N/A"];
+
 const clinicScheduleLink =
   "https://unchcs-my.sharepoint.com/:x:/r/personal/u324188_unch_unc_edu/Documents/Attachments/EP%20schedule%202025%20JUN-DEC.xlsx?d=w7e639e8a3f3a4636bfc019a3e39f7f1c&csf=1&web=1&e=dw3UBA";
+
+const ecgConfLink = "https://go.unc.edu/weeklyFellowsconference";
 
 export default function App() {
   const [clinicData, setClinicData] = useState({});
@@ -97,10 +91,16 @@ export default function App() {
   const handleTap = (weekKey, role, e) => {
     e.preventDefault();
     setSchedule((prev) => {
-      const currentWeek = prev[weekKey] || {};
-      const options = role.includes("ecg") || role.includes("ep") ? attendings : fellows;
-      const nextPerson = options[(options.indexOf(currentWeek[role]) + 1) % options.length] || options[0];
-      const updatedWeek = { ...currentWeek, [role]: nextPerson };
+      const currentWeek = prev[weekKey] || {
+        lab_d: fellows[0],
+        lab_f: fellows[1],
+        rex_hbh: fellows[2],
+        tues_am_ecg: "AG",
+        thurs_am_ep: "TM",
+      };
+      const list = role.includes("ecg") || role.includes("ep") ? attendings : fellows;
+      const next = list[(list.indexOf(currentWeek[role]) + 1) % list.length];
+      const updatedWeek = { ...currentWeek, [role]: next };
       const updated = { ...prev, [weekKey]: updatedWeek };
       saveAssignment(weekKey, updatedWeek);
       return updated;
@@ -123,33 +123,25 @@ export default function App() {
 
   const todayIndex = weekList.findIndex((w) => isAfter(new Date(w.weekStart), new Date()));
 
-  const tally = fellows.reduce((acc, name) => {
-    acc[name] = { lab_d: 0, lab_f: 0, rex_hbh: 0, total: 0 };
-    weekList.forEach(({ assigned }) => {
-      Object.keys(assigned).forEach((role) => {
-        if (assigned[role] === name) {
-          acc[name][role] = (acc[name][role] || 0) + 1;
-          acc[name].total += 1;
-        }
-      });
-    });
-    return acc;
-  }, {});
-
   if (loading) return <div style={{ padding: "2rem" }}>Loading schedule...</div>;
+
   if (!unlocked) {
     return (
       <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
         <h2>Enter Password</h2>
         <input type="password" value={enteredPw} onChange={(e) => setEnteredPw(e.target.value)} />
-        <button onClick={() => {
-          if (enteredPw === "uncep") {
-            localStorage.setItem("unc_ep_pw", "uncep");
-            setUnlocked(true);
-          } else {
-            alert("Wrong password");
-          }
-        }}>Unlock</button>
+        <button
+          onClick={() => {
+            if (enteredPw === "uncep") {
+              localStorage.setItem("unc_ep_pw", "uncep");
+              setUnlocked(true);
+            } else {
+              alert("Wrong password");
+            }
+          }}
+        >
+          Unlock
+        </button>
       </div>
     );
   }
@@ -157,21 +149,16 @@ export default function App() {
   return (
     <div style={{ padding: "1rem" }}>
       <div style={{ position: "sticky", top: 0, background: "white", paddingBottom: "1rem", zIndex: 10 }}>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          {fellows.map((name) => (
-            <div key={name} style={{ background: fellowColors[name], padding: "0.5rem", borderRadius: "0.5rem" }}>
-              <strong>{name}</strong>
-              <div>Lab D: {tally[name].lab_d}</div>
-              <div>Lab F: {tally[name].lab_f}</div>
-              <div>Rex/HBH: {tally[name].rex_hbh}</div>
-              <div>Total: {tally[name].total}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ textAlign: "right", marginTop: "0.5rem" }}>
-          <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem" }}>
-            Clinic Schedule
-          </a>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={{ margin: 0 }}>EP Schedule</h2>
+          <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
+            <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem" }}>
+              Clinic Schedule
+            </a>
+            <a href={ecgConfLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
+              ECG/EP Conference Zoom
+            </a>
+          </div>
         </div>
       </div>
 
@@ -187,15 +174,9 @@ export default function App() {
               <div key={role} style={{ marginTop: "0.5rem" }}>
                 <div
                   onClick={(e) => handleTap(weekKey, role, e)}
-                  style={{
-                    display: "inline-block",
-                    padding: "0.3rem 0.6rem",
-                    background: fellowColors[assigned[role]] || attendingColors[assigned[role]] || "#e0e0e0",
-                    borderRadius: "1rem",
-                    cursor: "pointer",
-                  }}
+                  style={{ display: "inline-block", padding: "0.3rem 0.6rem", background: fellowColors[assigned[role]] || "#e5e7eb", borderRadius: "1rem", cursor: "pointer" }}
                 >
-                  {assigned[role] || "-"}
+                  {assigned[role]}
                 </div>
                 <span style={{ marginLeft: "0.5rem" }}>{roleLabels[role]}</span>
               </div>

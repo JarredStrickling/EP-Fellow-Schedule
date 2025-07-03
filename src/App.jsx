@@ -123,11 +123,15 @@ export default function App() {
       tues_am_ecg: attendings[i % attendings.length],
       thurs_am_ep: attendings[(i + 1) % attendings.length],
     };
-    return { weekKey, weekStart, weekEnd: correctedEnd, assigned };
-
+    return { weekKey, weekStart, weekEnd, assigned }; // ✅ include weekEnd here
   });
+  
 
-  const todayIndex = weekList.findIndex((w) => isAfter(new Date(w.weekStart), new Date()));
+  const todayIndex = weekList.findIndex(({ weekStart, weekEnd }) => {
+    const now = new Date();
+    return now >= weekStart && now <= weekEnd;
+  });
+  
 
   if (loading) return <div style={{ padding: "2rem" }}>Loading schedule...</div>;
 

@@ -1,21 +1,58 @@
+/* === Root Layout === */
 #root {
   width: 100%;
   padding: 1rem;
   box-sizing: border-box;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
+/* === Light/Dark Mode Variables === */
+:root {
+  --bg: #ffffff;
+  --text: #1a1a1a;
+  --card-bg: #f9f9f9;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --pill-text: #111;
+  --link: #2563eb;
+  --button-bg: #e5e7eb;
+}
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --text: #e5e5e5;
+    --card-bg: #1f1f1f;
+    --card-shadow: rgba(255, 255, 255, 0.1);
+    --pill-text: #f9f9f9;
+    --link: #93c5fd;
+    --button-bg: #2e2e2e;
+  }
+}
 
+/* === Typography === */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
+/* === Logo === */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -35,39 +72,50 @@
   }
 }
 
+/* === Card === */
 .card {
-  padding: 2em;
+  padding: 1rem;
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 5px var(--card-shadow);
+  transition: background-color 0.3s ease;
 }
 
+/* === Pills === */
+.tap-pill {
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  color: var(--pill-text);
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+.tap-pill:active {
+  transform: scale(0.95);
+}
+
+/* === Links and Buttons === */
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+button {
+  background: var(--button-bg);
+  border: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}
+
+/* === Misc === */
 .read-the-docs {
   color: #888;
-}
-/* === Light/Dark Mode Variables === */
-
-:root {
-  --bg: #ffffff;
-  --text: #000000;
-  --card-bg: #f0f4f8;
-  --card-shadow: rgba(0, 0, 0, 0.1);
-  --link: #2563eb;
-  --fellow-text: #111;
-
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1a1a1a;
-    --text: #ffffff;
-    --card-bg: #2a2a2a;
-    --card-shadow: rgba(255, 255, 255, 0.1);
-    --link: #60a5fa;
-    --fellow-text: #111;
-
-  }
-}
-
-body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: sans-serif;
 }

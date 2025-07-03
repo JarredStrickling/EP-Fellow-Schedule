@@ -1,10 +1,34 @@
+// App.css (make sure this is saved in your project)
+:root {
+  --bg-color: #ffffff;
+  --text-color: #111111;
+  --card-bg: #f9f9f9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1f2937;
+    --text-color: #f3f4f6;
+    --card-bg: #374151;
+  }
+}
+
+.tap-pill {
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.tap-pill:active {
+  transform: scale(0.95);
+}
+
+// App.js
 import { useState, useEffect, useRef } from "react";
-import { format, addWeeks, parseISO, isAfter, subDays } from "date-fns";
+import { format, addWeeks, parseISO, isAfter } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
 import "./App.css";
 
 const SUPABASE_URL = "https://ekrraibgkgntafarxoni.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrcnJhaWJna2dudGFmYXJ4b25pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzI5MTMsImV4cCI6MjA2MDk0ODkxM30.a6KwZbxSCql1AjhKG9PMPjh6ctU9nnFzwgGerMOVmBI";
+const SUPABASE_KEY = "[your-key]"; // Keep this secure
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const fellows = ["JS", "TD", "MS"];
@@ -14,8 +38,8 @@ const fellowColors = {
   MS: "#fecaca",
   AG: "#fde68a",
   TM: "#fcd34d",
-  MB: "#fdba74",
-  FS: "#fca5a5",
+  MB: "#fbbf24",
+  FS: "#f87171",
   PK: "#c4b5fd",
   "N/A": "#e5e7eb",
 };
@@ -30,9 +54,7 @@ const roleLabels = {
 
 const attendings = ["AG", "TM", "MB", "FS", "PK", "N/A"];
 
-const clinicScheduleLink =
-  "https://unchcs-my.sharepoint.com/:x:/r/personal/u324188_unch_unc_edu/Documents/Attachments/EP%20schedule%202025%20JUN-DEC.xlsx?d=w7e639e8a3f3a4636bfc019a3e39f7f1c&csf=1&web=1&e=dw3UBA";
-
+const clinicScheduleLink = "https://unchcs-my.sharepoint.com/...";
 const ecgConfLink = "https://go.unc.edu/weeklyFellowsconference";
 
 export default function App() {
@@ -115,7 +137,7 @@ export default function App() {
 
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
-    const weekEnd = subDays(addWeeks(weekStart, 1), 1);
+    const weekEnd = addWeeks(weekStart, 1);
     const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(weekEnd, "yyyy-MM-dd")}`;
     const assigned = schedule[weekKey] || {
       lab_d: fellows[i % fellows.length],
@@ -136,34 +158,30 @@ export default function App() {
       <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
         <h2>Enter Password</h2>
         <input type="password" value={enteredPw} onChange={(e) => setEnteredPw(e.target.value)} />
-        <button
-          onClick={() => {
-            if (enteredPw === "uncep") {
-              localStorage.setItem("unc_ep_pw", "uncep");
-              setUnlocked(true);
-            } else {
-              alert("Wrong password");
-            }
-          }}
-        >
-          Unlock
-        </button>
+        <button onClick={() => {
+          if (enteredPw === "uncep") {
+            localStorage.setItem("unc_ep_pw", "uncep");
+            setUnlocked(true);
+          } else {
+            alert("Wrong password");
+          }
+        }}>Unlock</button>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <div style={{ position: "sticky", top: 0, background: "white", paddingBottom: "1rem", zIndex: 10 }}>
+    <div style={{ padding: "1rem", fontFamily: '"Inter", "Segoe UI", Roboto, system-ui, sans-serif', color: "var(--text-color)", backgroundColor: "var(--bg-color)" }}>
+      <div style={{ position: "sticky", top: 0, background: "var(--bg-color)", paddingBottom: "1rem", zIndex: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ margin: 0 }}>EP Schedule</h2>
+          <h2 style={{ margin: 0 }}>
+            EP Schedule
+            <div style={{ fontSize: "0.9rem", fontWeight: "normal", color: "#888" }}>UNC</div>
+          </h2>
           <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
-            <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem" }}>
-              Clinic Schedule
-            </a>
-            <a href={ecgConfLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
-              ECG/EP Conference Zoom
-            </a>
+            <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem" }}>Clinic Schedule</a>
+            <a href={ecgConfLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>ECG/EP Conference Zoom</a>
+            <img src="/unc-logo.png" alt="UNC Logo" title="UNC EP Fellowship" style={{ width: "50px", marginTop: "0.5rem", alignSelf: "flex-end", filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.25))" }} />
           </div>
         </div>
       </div>
@@ -173,33 +191,40 @@ export default function App() {
           <div
             key={weekKey}
             ref={i === todayIndex ? scrollRef : null}
-            style={{ background: "#f9f9f9", padding: "1rem", borderRadius: "0.75rem", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}
+            style={{
+              background: "var(--card-bg)",
+              padding: "1rem",
+              borderRadius: "0.75rem",
+              boxShadow: i === todayIndex ? "0 0 0 2px #60a5fa, 0 4px 10px rgba(96, 165, 250, 0.5)" : "0 2px 5px rgba(0,0,0,0.1)",
+            }}
           >
             <div><strong>Week of {format(weekStart, "MMM d, yyyy")}</strong></div>
             {Object.keys(roleLabels).map((role) => (
               <div key={role} style={{ marginTop: "0.5rem" }}>
                 <div
                   onClick={(e) => handleTap(weekKey, role, e)}
-                  style={{ display: "inline-block", padding: "0.3rem 0.6rem", background: fellowColors[assigned[role]] || "#e5e7eb", borderRadius: "1rem", cursor: "pointer" }}
+                  className="tap-pill"
+                  style={{
+                    display: "inline-block",
+                    padding: "0.4rem 0.75rem",
+                    background: fellowColors[assigned[role]] || "#e5e7eb",
+                    borderRadius: "1rem",
+                    cursor: "pointer",
+                    color: "inherit",
+                  }}
                 >
                   {assigned[role]}
                 </div>
                 <span style={{ marginLeft: "0.5rem" }}>{roleLabels[role]}</span>
               </div>
             ))}
-            <button
-              style={{ marginTop: "0.75rem", fontSize: "0.8rem" }}
-              onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}
-            >
+            <button style={{ marginTop: "0.75rem", fontSize: "0.8rem" }} onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}>
               {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
             </button>
-
             {visibleClinic === weekKey && (
               <div style={{ marginTop: "0.5rem" }}>
                 {!clinicData[weekKey] ? (
-                  <div style={{ fontStyle: "italic", color: "#666" }}>
-                    No clinic data available for this week.
-                  </div>
+                  <div style={{ fontStyle: "italic", color: "#666" }}>No clinic data available for this week.</div>
                 ) : (
                   Object.entries(clinicData[weekKey]).map(([day, person]) => (
                     <div key={day}><strong>{day}:</strong> {person}</div>

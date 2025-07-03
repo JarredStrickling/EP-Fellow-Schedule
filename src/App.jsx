@@ -163,47 +163,64 @@ export default function App() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginTop: "1rem" }}>
-        {weekList.map(({ weekKey, weekStart, assigned }, i) => (
+      {weekList.map(({ weekKey, weekStart, assigned }, i) => {
+  console.log("Checking clinic key:", weekKey, clinicData[weekKey]); // DEBUG LOG
+
+  return (
+    <div
+      key={weekKey}
+      ref={i === todayIndex ? scrollRef : null}
+      style={{
+        background: "#f9f9f9",
+        padding: "1rem",
+        borderRadius: "0.75rem",
+        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+      }}
+    >
+      <div><strong>Week of {format(weekStart, "MMM d, yyyy")}</strong></div>
+      {Object.keys(roleLabels).map((role) => (
+        <div key={role} style={{ marginTop: "0.5rem" }}>
           <div
-            key={weekKey}
-            ref={i === todayIndex ? scrollRef : null}
-            style={{ background: "#f9f9f9", padding: "1rem", borderRadius: "0.75rem", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}
+            onClick={(e) => handleTap(weekKey, role, e)}
+            style={{
+              display: "inline-block",
+              padding: "0.3rem 0.6rem",
+              background: fellowColors[assigned[role]] || "#e5e7eb",
+              borderRadius: "1rem",
+              cursor: "pointer",
+            }}
           >
-            <div><strong>Week of {format(weekStart, "MMM d, yyyy")}</strong></div>
-            {Object.keys(roleLabels).map((role) => (
-              <div key={role} style={{ marginTop: "0.5rem" }}>
-                <div
-                  onClick={(e) => handleTap(weekKey, role, e)}
-                  style={{ display: "inline-block", padding: "0.3rem 0.6rem", background: fellowColors[assigned[role]] || "#e5e7eb", borderRadius: "1rem", cursor: "pointer" }}
-                >
-                  {assigned[role]}
-                </div>
-                <span style={{ marginLeft: "0.5rem" }}>{roleLabels[role]}</span>
-              </div>
-            ))}
-            <button
-  style={{ marginTop: "0.75rem", fontSize: "0.8rem" }}
-  onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}
->
-  {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
-</button>
-
-{visibleClinic === weekKey && (
-  <div style={{ marginTop: "0.5rem" }}>
-    {!clinicData[weekKey] ? (
-      <div style={{ fontStyle: "italic", color: "#666" }}>
-        No clinic data available for this week.
-      </div>
-    ) : (
-      Object.entries(clinicData[weekKey]).map(([day, person]) => (
-        <div key={day}><strong>{day}:</strong> {person}</div>
-      ))
-    )}
-  </div>
-)}
-
+            {assigned[role]}
           </div>
-        ))}
+          <span style={{ marginLeft: "0.5rem" }}>{roleLabels[role]}</span>
+        </div>
+      ))}
+
+      <button
+        style={{ marginTop: "0.75rem", fontSize: "0.8rem" }}
+        onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}
+      >
+        {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
+      </button>
+
+      {visibleClinic === weekKey && (
+        <div style={{ marginTop: "0.5rem" }}>
+          {!clinicData[weekKey] ? (
+            <div style={{ fontStyle: "italic", color: "#666" }}>
+              No clinic data available for this week.
+            </div>
+          ) : (
+            Object.entries(clinicData[weekKey]).map(([day, person]) => (
+              <div key={day}><strong>{day}:</strong> {person}</div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+})}
+
+
       </div>
     </div>
   );

@@ -107,7 +107,8 @@ export default function App() {
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
     const weekEnd = addWeeks(weekStart, 1);
-    const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(weekEnd, "yyyy-MM-dd")}`;
+    const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(subDays(weekEnd, 1), "yyyy-MM-dd")}`;
+
     const assigned = schedule[weekKey] || {
       lab_d: fellows[i % fellows.length],
       lab_f: fellows[(i + 1) % fellows.length],

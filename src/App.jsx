@@ -182,18 +182,26 @@ export default function App() {
               </div>
             ))}
             <button
-              style={{ marginTop: "0.75rem", fontSize: "0.8rem" }}
-              onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}
-            >
-              {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
-            </button>
-            {visibleClinic === weekKey && clinicData[weekKey] && (
-              <div style={{ marginTop: "0.5rem" }}>
-                {Object.entries(clinicData[weekKey]).map(([day, person]) => (
-                  <div key={day}><strong>{day}:</strong> {person}</div>
-                ))}
-              </div>
-            )}
+  style={{ marginTop: "0.75rem", fontSize: "0.8rem" }}
+  onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}
+>
+  {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
+</button>
+
+{visibleClinic === weekKey && (
+  <div style={{ marginTop: "0.5rem" }}>
+    {!clinicData[weekKey] ? (
+      <div style={{ fontStyle: "italic", color: "#666" }}>
+        No clinic data available for this week.
+      </div>
+    ) : (
+      Object.entries(clinicData[weekKey]).map(([day, person]) => (
+        <div key={day}><strong>{day}:</strong> {person}</div>
+      ))
+    )}
+  </div>
+)}
+
           </div>
         ))}
       </div>

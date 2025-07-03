@@ -2,6 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { format, addWeeks, parseISO, isAfter } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
 import "./App.css";
+import { format, addWeeks, parseISO, isAfter, subDays } from "date-fns";
+const weekEnd = addWeeks(weekStart, 1);
+const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(subDays(weekEnd, 1), "yyyy-MM-dd")}`;
+
 
 const SUPABASE_URL = "https://ekrraibgkgntafarxoni.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrcnJhaWJna2dudGFmYXJ4b25pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzI5MTMsImV4cCI6MjA2MDk0ODkxM30.a6KwZbxSCql1AjhKG9PMPjh6ctU9nnFzwgGerMOVmBI";
@@ -110,7 +114,8 @@ export default function App() {
   const weekList = Array.from({ length: weeksToShow }, (_, i) => {
     const weekStart = addWeeks(startDate, i);
     const weekEnd = addWeeks(weekStart, 1);
-    const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(weekEnd, "yyyy-MM-dd")}`;
+const weekKey = `${format(weekStart, "yyyy-MM-dd")}_${format(addWeeks(weekStart, 1) - 1, "yyyy-MM-dd")}`;
+
     const assigned = schedule[weekKey] || {
       lab_d: fellows[i % fellows.length],
       lab_f: fellows[(i + 1) % fellows.length],

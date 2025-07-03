@@ -123,7 +123,8 @@ export default function App() {
       tues_am_ecg: attendings[i % attendings.length],
       thurs_am_ep: attendings[(i + 1) % attendings.length],
     };
-    return { weekKey, weekStart, assigned };
+    return { weekKey, weekStart, weekEnd: correctedEnd, assigned };
+
   });
 
   const todayIndex = weekList.findIndex((w) => isAfter(new Date(w.weekStart), new Date()));

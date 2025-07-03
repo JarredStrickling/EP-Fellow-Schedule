@@ -30,7 +30,9 @@ const roleLabels = {
 
 const attendings = ["AG", "TM", "MB", "FS", "PK", "N/A"];
 
-const clinicScheduleLink = "https://unchcs-my.sharepoint.com/...";
+const clinicScheduleLink =
+  "https://unchcs-my.sharepoint.com/:x:/r/personal/u324188_unch_unc_edu/Documents/Attachments/EP%20schedule%202025%20JUN-DEC.xlsx?d=w7e639e8a3f3a4636bfc019a3e39f7f1c&csf=1&web=1&e=dw3UBA";
+
 const ecgConfLink = "https://go.unc.edu/weeklyFellowsconference";
 
 export default function App() {

@@ -188,175 +188,175 @@ const clinicSchedule = {
     "Thursday": "Holiday",
     "Friday": "No clinic"
   },
-    "2026-01-04_2026-01-10": {
+    "2026-01-05_2026-01-11": {
     "Monday": "Strickling",
     "Tuesday": "Late clinic",
     "Wednesday": "Daubert",
     "Thursday": "Gen fellow",
     "Friday": "Gen fellow"
   },
-  "2026-01-11_2026-01-17": {
+  "2026-01-12_2026-01-18": {
     "Monday": "Gen fellow",
     "Tuesday": "Gen fellow",
     "Wednesday": "Strickling",
     "Thursday": "Daubert",
     "Friday": "Strickling"
   },
-  "2026-01-18_2026-01-24": {
+  "2026-01-19_2026-01-25": {
     "Monday": "Daubert",
     "Tuesday": "Strickling",
     "Wednesday": "Gen fellow",
     "Thursday": "Gen fellow",
     "Friday": "No clinic"
   },
-  "2026-01-25_2026-01-31": {
+  "2026-01-26_2026-02-01": {
     "Monday": "Gen fellow",
     "Tuesday": "Daubert",
     "Wednesday": "Skaf",
     "Thursday": "Strickling",
     "Friday": "Gen fellow"
   },
-  "2026-02-01_2026-02-07": {
+  "2026-02-02_2026-02-08": {
     "Monday": "No clinic",
     "Tuesday": "Gen fellow",
     "Wednesday": "Gen fellow",
     "Thursday": "Skaf",
     "Friday": "Daubert"
   },
-  "2026-02-08_2026-02-14": {
+  "2026-02-09_2026-02-15": {
     "Monday": "No clinic",
     "Tuesday": "Gen fellow",
     "Wednesday": "No clinic",
     "Thursday": "Gen fellow",
     "Friday": "Skaf"
   },
-  "2026-02-15_2026-02-21": {
+  "2026-02-16_2026-02-22": {
     "Monday": "Skaf",
     "Tuesday": "Gen fellow",
     "Wednesday": "Gen fellow",
     "Thursday": "No clinic",
     "Friday": "Gen fellow"
   },
-  "2026-02-22_2026-02-28": {
+  "2026-02-23_2026-03-01": {
     "Monday": "Gen fellow",
     "Tuesday": "No clinic",
     "Wednesday": "No clinic",
     "Thursday": "No clinic",
     "Friday": "Gen fellow"
   },
-  "2026-03-01_2026-03-07": {
+  "2026-03-02_2026-03-08": {
     "Monday": "Skaf",
     "Tuesday": "Strickling",
     "Wednesday": "Daubert",
     "Thursday": "Gen fellow",
     "Friday": "Gen fellow"
   },
-  "2026-03-08_2026-03-14": {
+  "2026-03-09_2026-03-15": {
     "Monday": "Gen fellow",
     "Tuesday": "Late clinic",
     "Wednesday": "Strickling",
     "Thursday": "Skaf",
     "Friday": "Gen fellow"
   },
-  "2026-03-15_2026-03-21": {
+  "2026-03-16_2026-03-22": {
     "Monday": "Strickling",
     "Tuesday": "Gen fellow",
     "Wednesday": "Gen fellow",
     "Thursday": "Skaf",
     "Friday": "Strickling"
   },
-  "2026-03-22_2026-03-28": {
+  "2026-03-23_2026-03-29": {
     "Monday": "No clinic",
     "Tuesday": "Gen fellow",
     "Wednesday": "No clinic",
     "Thursday": "Gen fellow",
     "Friday": "Daubert"
   },
-  "2026-03-29_2026-04-04": {
+  "2026-03-30_2026-04-05": {
     "Monday": "No clinic",
     "Tuesday": "No clinic",
     "Wednesday": "Gen fellow",
     "Thursday": "No clinic",
     "Friday": "No clinic"
   },
-  "2026-04-05_2026-04-11": {
+  "2026-04-06_2026-04-12": {
     "Monday": "Late clinic",
     "Tuesday": "Skaf",
     "Wednesday": "Daubert",
     "Thursday": "Gen fellow",
     "Friday": "Gen fellow"
   },
-  "2026-04-12_2026-04-18": {
+  "2026-04-13_2026-04-19": {
     "Monday": "Strickling",
     "Tuesday": "Daubert",
     "Wednesday": "No clinic",
     "Thursday": "Skaf",
     "Friday": "Gen fellow"
   },
-  "2026-04-19_2026-04-25": {
+  "2026-04-20_2026-04-26": {
     "Monday": "Gen fellow",
     "Tuesday": "Gen fellow",
     "Wednesday": "Daubert",
     "Thursday": "No clinic",
     "Friday": "No clinic"
   },
-  "2026-04-26_2026-05-02": {
+  "2026-04-27_2026-05-03": {
     "Monday": "Skaf",
     "Tuesday": "Strickling",
     "Wednesday": "No clinic",
     "Thursday": "Gen fellow",
     "Friday": "Gen fellow"
   },
-  "2026-05-03_2026-05-09": {
+  "2026-05-04_2026-05-10": {
     "Monday": "Gen fellow",
     "Tuesday": "Gen fellow",
     "Wednesday": "No clinic",
     "Thursday": "Skaf",
     "Friday": "Daubert"
   },
-  "2026-05-10_2026-05-16": {
+  "2026-05-11_2026-05-17": {
     "Monday": "Skaf",
     "Tuesday": "Gen fellow",
     "Wednesday": "Daubert",
     "Thursday": "No fellow",
     "Friday": "Strickling"
   },
-  "2026-05-17_2026-05-23": {
+  "2026-05-18_2026-05-24": {
     "Monday": "Daubert",
     "Tuesday": "Gen fellow",
     "Wednesday": "Gen fellow",
     "Thursday": "Skaf",
     "Friday": "Gen fellow"
   },
-  "2026-05-24_2026-05-30": {
+  "2026-05-25_2026-05-31": {
     "Monday": "No clinic",
     "Tuesday": "Late clinic",
     "Wednesday": "No clinic",
     "Thursday": "Gen fellow",
     "Friday": "Gen fellow"
   },
-  "2026-05-31_2026-06-06": {
+  "2026-06-01_2026-06-07": {
     "Monday": "Gen fellow",
     "Tuesday": "Late clinic",
     "Wednesday": "Strickling",
     "Thursday": "Gen fellow",
     "Friday": "Gen fellow"
   },
-  "2026-06-07_2026-06-13": {
+  "2026-06-08_2026-06-14": {
     "Monday": "Late clinic",
     "Tuesday": "Daubert",
     "Wednesday": "Gen fellow",
     "Thursday": "Gen fellow",
     "Friday": "Gen fellow"
   },
-  "2026-06-14_2026-06-20": {
+  "2026-06-15_2026-06-21": {
     "Monday": "Late clinic",
     "Tuesday": "Gen fellow",
     "Wednesday": "Gen fellow",
     "Thursday": "Gen fellow",
     "Friday": "Daubert"
   },
-  "2026-06-21_2026-06-27": {
+  "2026-06-22_2026-06-28": {
     "Monday": "Gen fellow",
     "Tuesday": "No clinic",
     "Wednesday": "Gen fellow",
@@ -364,6 +364,5 @@ const clinicSchedule = {
     "Friday": "No clinic"
   },
 
-};
 
 export default clinicSchedule;

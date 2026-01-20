@@ -119,3 +119,25 @@ button:hover {
 .read-the-docs {
   color: #888;
 }
+/* === Glass Header Styling === */
+.glass-header {
+  /* Use the background variable with transparency */
+  background: color-mix(in srgb, var(--bg), transparent 15%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--card-shadow);
+  /* Ensures it spans the full width even with parent padding */
+  margin: -1rem -1rem 1rem -1rem;
+  padding: 1rem 1rem 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Subtle border for dark mode to keep it from looking flat */
+@media (prefers-color-scheme: dark) {
+  .glass-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(18, 18, 18, 0.8); /* Darker glass for night mode */
+  }
+}

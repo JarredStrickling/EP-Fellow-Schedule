@@ -1,110 +1,104 @@
-import { useEffect, useState } from "react";
-import { supabase } from "./App"; // Ensure this points to where your supabase client is initialized
-
-const fellowColors = {
-  JS: "#bfdbfe", // Light Blue
-  TD: "#bbf7d0", // Light Green
-};
+import { useState, useEffect } from "react";
+import { supabase } from "./App";
 
 export default function DiagnosticHub() {
-  const [cards, setCards] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [isRevealed, setIsRevealed] = useState(false);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState(null); // For the "Zoom" view
+  const [showExplanation, setShowExplanation] = useState(false);
 
   useEffect(() => {
-    async function fetchCards() {
-      const { data, error } = await supabase.from("diagnostic_cards").select("*");
-      if (data) setCards(data);
-    }
-    fetchCards();
+    fetchHubData();
   }, []);
 
-  if (cards.length === 0) return <div className="p-10 text-center">Loading cases...</div>;
-
-  const currentCard = cards[currentIndex];
-
-  const handleAnswer = (option) => {
-    setSelectedOption(option);
-    setIsRevealed(true);
+  const fetchHubData = async () => {
+    const { data, error } = await supabase.from("diagnostic_cards").select("*");
+    if (error) console.error(error);
+    else setItems(data);
+    setLoading(false);
   };
 
-  const nextCard = () => {
-    setCurrentIndex((prev) => (prev + 1) % cards.length);
-    setSelectedOption(null);
-    setIsRevealed(false);
-  };
+  if (loading) return <div style={{ padding: "2rem" }}>Loading Tracings...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 font-sans">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8 flex justify-between items-end">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Diagnostic Hub</h1>
-            <p className="text-gray-500">Mastering EP Maneuvers & Localization</p>
-          </div>
-          <div className="text-sm font-mono bg-gray-200 px-3 py-1 rounded">
-            Case {currentIndex + 1} of {cards.length}
-          </div>
-        </header>
+    <div style={{ paddingBottom: "2rem" }}>
+      <h3 style={{ fontSize: "0.9rem", color: "#64748b", textTransform: "uppercase", marginBottom: "1rem" }}>
+        EGM Training Gallery
+      </h3>
 
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-          {/* Clinical Slide Image */}
-          <div className="bg-black flex justify-center">
+      {/* 1. Image Grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+        {items.map((item) => (
+          <div 
+            key={item.id} 
+            onClick={() => { setSelectedItem(item); setShowExplanation(false); }}
+            style={{ 
+              aspectRatio: "1", 
+              background: "#000", 
+              borderRadius: "8px", 
+              overflow: "hidden", 
+              position: "relative",
+              cursor: "pointer",
+              border: "1px solid var(--card-shadow)"
+            }}
+          >
             <img 
-              src={currentCard.image_url} 
-              alt="EP Trace" 
-              className="max-h-[400px] object-contain"
+              src={item.image_url} 
+              style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }} 
+              alt="EGM Tracing"
+            />
+            <div style={{ position: "absolute", bottom: "5px", left: "5px", background: "rgba(0,0,0,0.6)", padding: "2px 6px", borderRadius: "4px", fontSize: "0.6rem", color: "white" }}>
+              {item.category}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 2. Full-Screen Modal Overlay */}
+      {selectedItem && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: "#000", zIndex: 2000, display: "flex", flexDirection: "column"
+        }}>
+          {/* Close Button */}
+          <button 
+            onClick={() => setSelectedItem(null)}
+            style={{ position: "absolute", top: "40px", right: "20px", background: "rgba(255,255,255,0.2)", borderRadius: "50%", width: "40px", height: "40px", color: "white", zIndex: 2001 }}
+          >✕</button>
+
+          {/* Main Image (Zoomable/Scrollable) */}
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", overflow: "auto", padding: "10px" }}>
+            <img 
+              src={selectedItem.image_url} 
+              style={{ maxWidth: "100%", maxHeight: "80vh", objectFit: "contain" }} 
             />
           </div>
 
-          <div className="p-8">
-            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-4" 
-                  style={{ backgroundColor: fellowColors.JS }}>
-              {currentCard.category}
-            </span>
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">{currentCard.question}</h2>
-
-            {/* Options Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {currentCard.options.map((option) => {
-                const isCorrect = option === currentCard.correct_answer;
-                const isSelected = selectedOption === option;
-                
-                let btnStyle = "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100";
-                if (isRevealed && isCorrect) btnStyle = "bg-[#bbf7d0] border-green-500 text-green-800 shadow-inner";
-                if (isRevealed && isSelected && !isCorrect) btnStyle = "bg-red-100 border-red-400 text-red-700";
-
-                return (
-                  <button
-                    key={option}
-                    disabled={isRevealed}
-                    onClick={() => handleAnswer(option)}
-                    className={`p-4 text-left border-2 rounded-xl transition-all duration-200 font-medium ${btnStyle}`}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Rationale Reveal */}
-            {isRevealed && (
-              <div className="mt-8 p-6 rounded-xl border-l-8 border-blue-400 animate-in slide-in-from-bottom-4 duration-500" 
-                   style={{ backgroundColor: `${fellowColors.JS}40` }}>
-                <h3 className="font-bold text-blue-900 mb-2">Diagnostic Pearl</h3>
-                <p className="text-blue-900 leading-relaxed">{currentCard.rationale}</p>
-                <button 
-                  onClick={nextCard}
-                  className="mt-6 w-full py-3 bg-white border border-blue-200 rounded-lg font-bold text-blue-600 hover:bg-blue-50 transition"
-                >
-                  Next Case →
-                </button>
+          {/* Reveal Panel */}
+          <div style={{ 
+            background: "#1a1a1a", padding: "20px", color: "white", 
+            borderTopLeftRadius: "20px", borderTopRightRadius: "20px",
+            boxShadow: "0 -5px 20px rgba(0,0,0,0.5)"
+          }}>
+            {!showExplanation ? (
+              <button 
+                onClick={() => setShowExplanation(true)}
+                style={{ width: "100%", padding: "12px", borderRadius: "10px", background: "#3b82f6", color: "white", fontWeight: "bold" }}
+              >
+                Reveal Diagnosis & Explanation
+              </button>
+            ) : (
+              <div>
+                <h2 style={{ color: "#3b82f6", margin: "0 0 10px 0" }}>{selectedItem.correct_answer}</h2>
+                <p style={{ fontSize: "0.95rem", lineHeight: "1.4" }}>{selectedItem.rationale}</p>
+                <div style={{ marginTop: "10px", fontSize: "0.8rem", color: "#888" }}>
+                  Category: {selectedItem.category}
+                </div>
               </div>
             )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

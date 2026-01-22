@@ -142,7 +142,7 @@ export default function App() {
   }
 
   return (
-   <div style={{ fontFamily: '"Segoe UI", system-ui, sans-serif', backgroundColor: "var(--bg)", color: "var(--text)", minHeight: "100vh" }}>
+    <div style={{ fontFamily: '"Segoe UI", system-ui, sans-serif', backgroundColor: "var(--bg)", color: "var(--text)", minHeight: "100vh" }}>
       <div className="glass-header">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ textAlign: "left" }}>
@@ -182,58 +182,59 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ padding: "0 1rem 1rem 1rem" }}> {/* Adds side and bottom padding only */}
-       {view === "schedule" ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
-          {weekList.map(({ weekKey, weekStart, assigned }, i) => (
-            <div
-              key={weekKey}
-              ref={i === todayIndex ? scrollRef : null}
-              style={{
-                background: "var(--card-bg)",
-                padding: "1rem",
-                borderRadius: "0.75rem",
-                boxShadow: i === todayIndex
-                  ? "0 0 10px 2px rgba(96,165,250,0.8), inset 0 0 6px rgba(96,165,250,0.4)"
-                  : "0 2px 5px var(--card-shadow)",
-              }}
-            >
-              <div><strong>Week of {format(weekStart, "MMM d, yyyy")}</strong></div>
-              {Object.keys(roleLabels).map((role) => (
-                <div key={role} style={{ marginTop: "0.5rem" }}>
-                  <div
-                    onClick={(e) => handleTap(weekKey, role, e)}
-                    className="tap-pill"
-                    style={{
-                      background: fellowColors[assigned[role]] || "#e5e7eb",
-                      color: "#1a1a1a",
-                    }}
-                  >
-                    {assigned[role]}
+      <div style={{ padding: "0 1rem 1rem 1rem" }}>
+        {view === "schedule" ? (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
+            {weekList.map(({ weekKey, weekStart, assigned }, i) => (
+              <div
+                key={weekKey}
+                ref={i === todayIndex ? scrollRef : null}
+                style={{
+                  background: "var(--card-bg)",
+                  padding: "1rem",
+                  borderRadius: "0.75rem",
+                  boxShadow: i === todayIndex
+                    ? "0 0 10px 2px rgba(96,165,250,0.8), inset 0 0 6px rgba(96,165,250,0.4)"
+                    : "0 2px 5px var(--card-shadow)",
+                }}
+              >
+                <div><strong>Week of {format(weekStart, "MMM d, yyyy")}</strong></div>
+                {Object.keys(roleLabels).map((role) => (
+                  <div key={role} style={{ marginTop: "0.5rem" }}>
+                    <div
+                      onClick={(e) => handleTap(weekKey, role, e)}
+                      className="tap-pill"
+                      style={{
+                        background: fellowColors[assigned[role]] || "#e5e7eb",
+                        color: "#1a1a1a",
+                      }}
+                    >
+                      {assigned[role]}
+                    </div>
+                    <span style={{ marginLeft: "0.5rem" }}>{roleLabels[role]}</span>
                   </div>
-                  <span style={{ marginLeft: "0.5rem" }}>{roleLabels[role]}</span>
-                </div>
-              ))}
-              <button style={{ marginTop: "0.75rem", fontSize: "0.8rem" }} onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}>
-                {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
-              </button>
-              {visibleClinic === weekKey && (
-                <div style={{ marginTop: "0.5rem" }}>
-                  {!clinicData[weekKey] ? (
-                    <div style={{ fontStyle: "italic", color: "#666" }}>No clinic data available for this week.</div>
-                  ) : (
-                    Object.entries(clinicData[weekKey]).map(([day, person]) => (
-                      <div key={day}><strong>{day}:</strong> {person}</div>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <DiagnosticHub />
-      )}
+                ))}
+                <button style={{ marginTop: "0.75rem", fontSize: "0.8rem" }} onClick={() => setVisibleClinic(visibleClinic === weekKey ? null : weekKey)}>
+                  {visibleClinic === weekKey ? "Hide Clinic" : "View Clinic"}
+                </button>
+                {visibleClinic === weekKey && (
+                  <div style={{ marginTop: "0.5rem" }}>
+                    {!clinicData[weekKey] ? (
+                      <div style={{ fontStyle: "italic", color: "#666" }}>No clinic data available for this week.</div>
+                    ) : (
+                      Object.entries(clinicData[weekKey]).map(([day, person]) => (
+                        <div key={day}><strong>{day}:</strong> {person}</div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <DiagnosticHub />
+        )}
+      </div>
     </div>
   );
 }

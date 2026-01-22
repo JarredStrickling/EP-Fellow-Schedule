@@ -142,38 +142,49 @@ export default function App() {
   }
 
   return (
-    <div style={{ padding: "1rem", fontFamily: '"Segoe UI", system-ui, sans-serif', backgroundColor: "var(--bg)", color: "var(--text)", minHeight: "100vh" }}>
-      <div style={{ position: "sticky", top: 0, background: "var(--bg)", paddingBottom: "1rem", zIndex: 10 }}>
+   <div style={{ fontFamily: '"Segoe UI", system-ui, sans-serif', backgroundColor: "var(--bg)", color: "var(--text)", minHeight: "100vh" }}>
+      <div className="glass-header">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ margin: 0 }}>
-            EP {view === "schedule" ? "Schedule" : "Diagnostic Hub"}
-            <div style={{ fontSize: "0.9rem", fontWeight: "normal", color: "#888" }}>UNC</div>
-          </h2>
-          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <button 
-              onClick={() => setView(view === "schedule" ? "hub" : "schedule")}
-              style={{
-                padding: "8px 12px",
-                borderRadius: "8px",
-                backgroundColor: view === "schedule" ? fellowColors.JS : fellowColors.TD,
-                border: "1px solid #ddd",
-                fontWeight: "bold",
-                cursor: "pointer",
-                fontSize: "0.85rem"
-              }}
-            >
-              {view === "schedule" ? "Go to Study Hub →" : "← Back to Schedule"}
-            </button>
-            <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
-              <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem" }}>Clinic Schedule</a>
-              <a href={ecgConfLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>ECG/EP Conference Zoom</a>
+          <div style={{ textAlign: "left" }}>
+            <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "var(--text)" }}>
+              EP <span style={{ color: "#3b82f6" }}>{view === "schedule" ? "Schedule" : "Hub"}</span>
+            </h2>
+            <div style={{ fontSize: "0.65rem", fontWeight: "bold", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              UNC Health
             </div>
           </div>
+
+          <button 
+            onClick={() => setView(view === "schedule" ? "hub" : "schedule")}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "20px",
+              backgroundColor: view === "schedule" ? "#3b82f6" : "#10b981",
+              color: "white",
+              border: "none",
+              fontWeight: "700",
+              fontSize: "0.75rem",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+              cursor: "pointer"
+            }}
+          >
+            {view === "schedule" ? "📖 Study Hub" : "🗓️ Schedule"}
+          </button>
+        </div>
+
+        <div style={{ display: "flex", gap: "15px", marginTop: "12px", paddingTop: "8px", borderTop: "1px solid var(--card-shadow)" }}>
+          <a href={clinicScheduleLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.7rem", fontWeight: "600", color: "var(--link)" }}>
+            📍 Clinic
+          </a>
+          <a href={ecgConfLink} target="_blank" rel="noreferrer" style={{ fontSize: "0.7rem", fontWeight: "600", color: "var(--link)" }}>
+            📺 Conference
+          </a>
         </div>
       </div>
 
-      {view === "schedule" ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginTop: "1rem" }}>
+      <div style={{ padding: "0 1rem 1rem 1rem" }}> {/* Adds side and bottom padding only */}
+       {view === "schedule" ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
           {weekList.map(({ weekKey, weekStart, assigned }, i) => (
             <div
               key={weekKey}

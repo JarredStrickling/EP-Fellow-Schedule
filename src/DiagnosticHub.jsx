@@ -94,16 +94,18 @@ export default function DiagnosticHub() {
           </div>
 
           {/* Reveal Panel */}
+          {/* Reveal Panel */}
           <div style={{ 
             background: "#111", padding: "30px", color: "white", 
             borderTopLeftRadius: "30px", borderTopRightRadius: "30px",
             boxShadow: "0 -10px 40px rgba(0,0,0,0.8)",
-            borderTop: "1px solid rgba(255,255,255,0.05)"
+            borderTop: "1px solid rgba(255,255,255,0.05)",
+            paddingBottom: "40px" // Extra space for thumb reach
           }}>
             {!showExplanation ? (
               <button 
                 onClick={() => setShowExplanation(true)}
-                style={{ width: "100%", padding: "18px", borderRadius: "14px", background: "#3b82f6", color: "white", fontWeight: "bold", fontSize: "1.1rem", border: "none", cursor: "pointer", transition: "transform 0.2s" }}
+                style={{ width: "100%", padding: "18px", borderRadius: "14px", background: "#3b82f6", color: "white", fontWeight: "bold", fontSize: "1.1rem", border: "none", cursor: "pointer" }}
               >
                 Reveal Diagnosis & Logic
               </button>
@@ -113,12 +115,27 @@ export default function DiagnosticHub() {
                   <h2 style={{ color: "#3b82f6", margin: 0, fontSize: "1.4rem" }}>{selectedItem.correct_answer}</h2>
                   <span style={{ fontSize: "0.7rem", color: "#94a3b8", border: "1px solid #334155", padding: "3px 10px", borderRadius: "20px", textTransform: "uppercase" }}>{selectedItem.category}</span>
                 </div>
-                <p style={{ fontSize: "1.05rem", lineHeight: "1.6", color: "#cbd5e1", margin: 0, fontWeight: "300" }}>{selectedItem.rationale}</p>
+                <p style={{ fontSize: "1.05rem", lineHeight: "1.6", color: "#cbd5e1", marginBottom: "24px", fontWeight: "300" }}>{selectedItem.rationale}</p>
+                
+                {/* NEW: Back Button inside the revealed state */}
+                <button 
+                  onClick={() => setSelectedItem(null)}
+                  style={{ 
+                    width: "100%", 
+                    padding: "12px", 
+                    borderRadius: "10px", 
+                    background: "rgba(255,255,255,0.05)", 
+                    color: "#94a3b8", 
+                    border: "1px solid #334155", 
+                    fontWeight: "600",
+                    cursor: "pointer" 
+                  }}
+                >
+                  ← Back to Gallery
+                </button>
               </div>
             )}
           </div>
-        </div>
-      )}
 
       {/* Basic FadeIn Animation */}
       <style>{`

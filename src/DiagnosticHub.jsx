@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./App";
 
-export default function DiagnosticHub() 
+export default function DiagnosticHub() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null); 
@@ -59,7 +59,7 @@ export default function DiagnosticHub()
       {selectedItem && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0, 
-          backgroundColor: "rgba(0,0,0,0.96)", z_index: 2000, display: "flex", flexDirection: "column",
+          backgroundColor: "rgba(0,0,0,0.96)", zIndex: 2000, display: "flex", flexDirection: "column",
           backdropFilter: "blur(15px)"
         }}>
           {/* Close Button */}
@@ -68,39 +68,34 @@ export default function DiagnosticHub()
             style={{ position: "absolute", top: "50px", right: "25px", background: "rgba(255,255,255,0.15)", border: "none", borderRadius: "50%", width: "44px", height: "44px", color: "white", zIndex: 2001, fontSize: "1.2rem", cursor: "pointer" }}
           >✕</button>
 
-          {/* Main Content Area */}
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "auto", padding: "20px", marginTop: "60px" }}>
-            
-            {/* The Question/Context Text */}
+          {/* Main Content Area - Click background to exit */}
+          <div 
+            onClick={() => setSelectedItem(null)}
+            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "auto", padding: "20px", marginTop: "60px" }}
+          >
             {selectedItem.question && (
-              <div style={{ 
-                color: "#e2e8f0", 
-                marginBottom: "24px", 
-                textAlign: "center", 
-                maxWidth: "600px",
-                fontSize: "1.1rem",
-                fontWeight: "400",
-                lineHeight: "1.5",
-                padding: "0 10px"
-              }}>
+              <div 
+                onClick={(e) => e.stopPropagation()} // Prevents closing when clicking text
+                style={{ color: "#e2e8f0", marginBottom: "24px", textAlign: "center", maxWidth: "600px", fontSize: "1.1rem", fontWeight: "400", lineHeight: "1.5", padding: "0 10px" }}
+              >
                 {selectedItem.question}
               </div>
             )}
 
             <img 
+              onClick={(e) => e.stopPropagation()} // Prevents closing when clicking image
               src={selectedItem.image_url} 
               style={{ maxWidth: "100%", maxHeight: "55vh", objectFit: "contain", borderRadius: "8px", boxShadow: "0 20px 50px rgba(0,0,0,0.9)" }} 
             />
           </div>
 
           {/* Reveal Panel */}
-          {/* Reveal Panel */}
           <div style={{ 
             background: "#111", padding: "30px", color: "white", 
             borderTopLeftRadius: "30px", borderTopRightRadius: "30px",
             boxShadow: "0 -10px 40px rgba(0,0,0,0.8)",
             borderTop: "1px solid rgba(255,255,255,0.05)",
-            paddingBottom: "40px" // Extra space for thumb reach
+            paddingBottom: "40px"
           }}>
             {!showExplanation ? (
               <button 
@@ -117,28 +112,18 @@ export default function DiagnosticHub()
                 </div>
                 <p style={{ fontSize: "1.05rem", lineHeight: "1.6", color: "#cbd5e1", marginBottom: "24px", fontWeight: "300" }}>{selectedItem.rationale}</p>
                 
-                {/* NEW: Back Button inside the revealed state */}
                 <button 
                   onClick={() => setSelectedItem(null)}
-                  style={{ 
-                    width: "100%", 
-                    padding: "12px", 
-                    borderRadius: "10px", 
-                    background: "rgba(255,255,255,0.05)", 
-                    color: "#94a3b8", 
-                    border: "1px solid #334155", 
-                    fontWeight: "600",
-                    cursor: "pointer" 
-                  }}
+                  style={{ width: "100%", padding: "12px", borderRadius: "10px", background: "rgba(255,255,255,0.05)", color: "#94a3b8", border: "1px solid #334155", fontWeight: "600", cursor: "pointer" }}
                 >
                   ← Back to Gallery
                 </button>
               </div>
             )}
-        </div>    
+          </div>
+        </div>
+      )}
 
-
-      {/* Basic FadeIn Animation */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./App";
 
-export default function DiagnosticHub() {
+export default function DiagnosticHub() 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null); 
@@ -135,3 +135,16 @@ export default function DiagnosticHub() {
                 </button>
               </div>
             )}
+        </div>    
+
+
+      {/* Basic FadeIn Animation */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
+}

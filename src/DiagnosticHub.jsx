@@ -135,7 +135,6 @@ export default function DiagnosticHub() {
                 </button>
               </div>
             )}
-          </div>
 
       {/* Basic FadeIn Animation */}
       <style>{`

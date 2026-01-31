@@ -6,6 +6,7 @@ export default function DiagnosticHub() {
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null); 
   const [showExplanation, setShowExplanation] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("All");
 
   useEffect(() => {
     fetchHubData();
@@ -18,17 +19,53 @@ export default function DiagnosticHub() {
     setLoading(false);
   };
 
+  // Logic to find unique categories for the filter buttons
+  const categories = ["All", ...new Set(items.map(item => item.category))];
+
+  // Logic to filter the items based on selection
+  const filteredItems = activeCategory === "All" 
+    ? items 
+    : items.filter(item => item.category === activeCategory);
+
   if (loading) return <div style={{ padding: "2rem", color: "white" }}>Loading Tracings...</div>;
 
   return (
     <div style={{ paddingBottom: "2rem" }}>
-      <h3 style={{ fontSize: "0.9rem", color: "#64748b", textTransform: "uppercase", marginBottom: "1rem", letterSpacing: "1px" }}>
-        EGM Training Gallery
-      </h3>
+      {/* 1. Category Filter Bar */}
+      <div style={{ 
+        display: "flex", 
+        gap: "10px", 
+        overflowX: "auto", 
+        paddingBottom: "20px",
+        paddingTop: "10px",
+        scrollbarWidth: "none", // Hides scrollbar on Firefox
+        msOverflowStyle: "none" // Hides scrollbar on IE
+      }}>
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            style={{
+              padding: "8px 20px",
+              borderRadius: "20px",
+              border: activeCategory === cat ? "none" : "1px solid #334155",
+              background: activeCategory === cat ? "#3b82f6" : "transparent",
+              color: activeCategory === cat ? "white" : "#94a3b8",
+              whiteSpace: "nowrap",
+              fontSize: "0.85rem",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.2s"
+            }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
 
-      {/* 1. Image Grid */}
+      {/* 2. Image Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-        {items.map((item) => (
+        {filteredItems.map((item) => (
           <div 
             key={item.id} 
             onClick={() => { setSelectedItem(item); setShowExplanation(false); }}
@@ -45,17 +82,14 @@ export default function DiagnosticHub() {
           >
             <img 
               src={item.image_url} 
-              style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.7 }} 
+              style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }} 
               alt="EGM Tracing"
             />
-            <div style={{ position: "absolute", bottom: "8px", left: "8px", background: "rgba(0,0,0,0.7)", padding: "4px 8px", borderRadius: "6px", fontSize: "0.65rem", color: "white", fontWeight: "bold" }}>
-              {item.category}
-            </div>
           </div>
         ))}
       </div>
 
-      {/* 2. Full-Screen Modal Overlay */}
+      {/* 3. Full-Screen Modal Overlay */}
       {selectedItem && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0, 
@@ -68,14 +102,13 @@ export default function DiagnosticHub() {
             style={{ position: "absolute", top: "50px", right: "25px", background: "rgba(255,255,255,0.15)", border: "none", borderRadius: "50%", width: "44px", height: "44px", color: "white", zIndex: 2001, fontSize: "1.2rem", cursor: "pointer" }}
           >✕</button>
 
-          {/* Main Content Area - Click background to exit */}
           <div 
             onClick={() => setSelectedItem(null)}
             style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "auto", padding: "20px", marginTop: "60px" }}
           >
             {selectedItem.question && (
               <div 
-                onClick={(e) => e.stopPropagation()} // Prevents closing when clicking text
+                onClick={(e) => e.stopPropagation()}
                 style={{ color: "#e2e8f0", marginBottom: "24px", textAlign: "center", maxWidth: "600px", fontSize: "1.1rem", fontWeight: "400", lineHeight: "1.5", padding: "0 10px" }}
               >
                 {selectedItem.question}
@@ -83,13 +116,12 @@ export default function DiagnosticHub() {
             )}
 
             <img 
-              onClick={(e) => e.stopPropagation()} // Prevents closing when clicking image
+              onClick={(e) => e.stopPropagation()}
               src={selectedItem.image_url} 
               style={{ maxWidth: "100%", maxHeight: "55vh", objectFit: "contain", borderRadius: "8px", boxShadow: "0 20px 50px rgba(0,0,0,0.9)" }} 
             />
           </div>
 
-          {/* Reveal Panel */}
           <div style={{ 
             background: "#111", padding: "30px", color: "white", 
             borderTopLeftRadius: "30px", borderTopRightRadius: "30px",
